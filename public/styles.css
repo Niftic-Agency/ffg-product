@@ -334,6 +334,31 @@ img {
 .txn-download:hover { background: var(--ffg-surface-50); border-color: var(--overlay-dark-40); }
 .txn-download svg { color: var(--color-icon); }
 
+.txn-toolbar__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.txn-add-funds {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ffg-surface-950);
+  border: 1px solid var(--ffg-surface-950);
+  color: #FFFCF6;
+  padding: 9px 16px 9px 14px;
+  font-family: "PP Fragment Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+  border-radius: var(--radius-sm);
+}
+.txn-add-funds:hover { background: #000; }
+.txn-add-funds svg { color: currentColor; }
+
 .txn-table {
   width: 100%;
   border-top: 1px solid var(--ffg-divider);
