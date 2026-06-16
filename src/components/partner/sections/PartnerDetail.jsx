@@ -1,5 +1,7 @@
+import { BadgeCheck, Clock, Plus, Search, ShieldCheck } from 'lucide-react';
 import { PIcon } from '../icons/PIcon';
 import { PARTNER_DESC } from '../data/partners';
+import { statusForName } from '../data/statusTaxonomy';
 import { CauseAllocationTreemap } from '../../shared/CauseAllocationTreemap';
 import { Badge } from '../atoms/Badge';
 import { LogoPlaceholder } from '../atoms/LogoPlaceholder';
@@ -13,6 +15,28 @@ import { Accordion } from '../modals/Accordion.partner';
 import { ChartCard } from '../charts/ChartCard';
 import { DotChart } from '../charts/DotChart';
 
+// Review-status badge — reflects the org's place in FFG's vetting pipeline
+// (statusTaxonomy). Verified gets a special image fill; the other states show
+// their label with a matching icon.
+// Text inside the status / "backed by" pills matches the impact (category) badges:
+// 14px, weight 300, muted.
+const BADGE_TEXT = { fontSize: "14px", fontWeight: 300, color: "var(--ffg-muted)" };
+
+function ReviewStatusBadge({ status }) {
+  if (status === "Verified")
+    return (
+      <span className="impact-badge impact-badge--verified">
+        <BadgeCheck size={14} color="var(--ffg-muted)" /> <span style={BADGE_TEXT}>Verified</span>
+      </span>);
+
+  const Icon = status === "Screening" ? Clock : Search;
+  return (
+    <span className="impact-badge">
+      <Icon size={14} color="var(--ffg-muted)" /> <span style={BADGE_TEXT}>{status}</span>
+    </span>);
+
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // INDIVIDUAL PARTNER PAGE
 // ═══════════════════════════════════════════════════════════════════════════
@@ -23,6 +47,8 @@ function PartnerDetail({ partner, onBack }) {
   const TAG_SPLIT = { 1: [100], 2: [60, 40], 3: [50, 30, 20] };
   const split = TAG_SPLIT[partner.tags.length] || partner.tags.map(() => Math.round(100 / partner.tags.length));
   const allocData = partner.tags.map((name, i) => ({ name, size: split[i] }));
+  const status = statusForName(partner.name);
+  const isVerified = status === "Verified";
   return (
     <div className="pt-detail">
       {/* Top bar — Back link + right-side badges */}
@@ -31,26 +57,19 @@ function PartnerDetail({ partner, onBack }) {
           <PIcon.ArrowLeft />
           All Opportunities
         </button>
-        <div className="pt-topbar__badges">
-          <div className="pt-backed">
-            <PIcon.ShieldCheck />
-            Backed by 112 Builders
-          </div>
-          <div className="pt-backed">
-            <PIcon.Search />
-            Ongoing Review
-          </div>
-        </div>
       </div>
 
-      {/* Hero — logo + name, meta row, desc, tags, KPIs */}
+      {/* Hero — left content column (logo + name, meta, desc, tags, KPIs) + right CTA column */}
       <section className="pt-hero">
+        <div className="pt-hero__main">
         {/* Logo + name + meta */}
         <div className="pt-hero__id">
           <LogoPlaceholder size={84} name={partner.name} />
           <div className="pt-hero__id-text">
-            <h1 style={{ fontFamily: "\"PP Fragment Sans\", sans-serif", fontWeight: 400, fontStyle: "normal", fontSize: "48px", lineHeight: 1.05, letterSpacing: "-0.01em", margin: 0 }}>
+            <h1 style={{ fontFamily: "\"PP Fragment Sans\", sans-serif", fontWeight: 400, fontStyle: "normal", fontSize: "48px", lineHeight: 1.05, letterSpacing: "-0.01em", margin: 0, display: "inline-flex", alignItems: "center", gap: "10px" }}>
               {partner.name}
+              {isVerified &&
+              <BadgeCheck size={40} fill="var(--ffg-surface-950)" stroke="#FFFCF6" style={{ flexShrink: 0 }} />}
             </h1>
             <div className="pt-side__meta">
               <span className="pt-side__meta-item" style={{ fontSize: "13px", color: "var(--ffg-muted)", fontWeight: 300 }}>
@@ -68,39 +87,32 @@ function PartnerDetail({ partner, onBack }) {
         {/* Description — full width */}
         <p className="pt-side__desc" style={{ marginTop: "24px" }}>{PARTNER_DESC}</p>
 
-        {/* Cause area tags */}
+        {/* Status, backed-by, then impact-area tags */}
         <div className="pt-side__tags" style={{ marginTop: "24px" }}>
+          <ReviewStatusBadge status={status} />
+          <span className="impact-badge"><ShieldCheck size={14} color="var(--ffg-muted)" /> <span style={BADGE_TEXT}>Backed by 112 Builders</span></span>
           {partner.tags.map((t, i) => <Badge key={i}>{t}</Badge>)}
         </div>
+        </div>
 
-        {/* KPIs row — 3 items */}
-        <div className="pt-hero__kpis" style={{ marginTop: "48px" }}>
+        {/* KPIs row — 3 items (left column, second grid row) */}
+        <div className="pt-hero__kpis">
           <KPI label="Yearly People Reached" value="142" />
           <KPI label="Cost Per Outcome" value="$1,600" />
           <KPI label="Stage" value="500K–2M" />
         </div>
+
+        {/* CTA — right column, top-aligned with the KPI labels */}
+        <div className="pt-hero__aside">
+          <button className="hero-btn hero-btn--solid hero-btn--lg">
+            <Plus size={18} /> Add to portfolio
+          </button>
+        </div>
       </section>
 
-      {/* Photo + Location — two-column row */}
+      {/* Two-column row: "Why we chose" accordions on the left, photo + location on the right */}
       <div className="pt-photo-loc">
-        <div className="pt-org-photo">
-          <img
-            src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1200&q=80&auto=format&fit=crop"
-            alt={`${partner.name} — organization photo`}
-            className="pt-org-photo__img"
-          />
-        </div>
-        <div className="pt-photo-loc__info">
-          <div className="pt-loc-box">
-            <span className="pt-hero__detail-label">Location (1)</span>
-            <span className="pt-hero__detail-sub">Places where this organization intervenes</span>
-            <span className="pt-hero__detail-value">{partner.location}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Why we chose — full width, outside pt-main */}
-      <div className="pt-why">
+        <div className="pt-why">
         <Section title="Why we chose this organization" fullWidth aside={
           <div className="pt-reviewed-by">
             <div className="pt-reviewed-by__badge" aria-hidden="true" />
@@ -149,6 +161,25 @@ Dollars directed to {partner.name} go far. Their cost-per-outcome benchmarks fav
             </div>
           </div>
         </Section>
+        </div>
+
+        {/* Right column — photo stacked above the location box */}
+        <div className="pt-photo-loc__side">
+          <div className="pt-org-photo">
+            <img
+              src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1200&q=80&auto=format&fit=crop"
+              alt={`${partner.name} — organization photo`}
+              className="pt-org-photo__img"
+            />
+          </div>
+          <div className="pt-photo-loc__info">
+            <div className="pt-loc-box">
+              <span className="pt-hero__detail-label">Location (1)</span>
+              <span className="pt-hero__detail-sub">Places where this organization intervenes</span>
+              <span className="pt-hero__detail-value">{partner.location}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="pt-why">
