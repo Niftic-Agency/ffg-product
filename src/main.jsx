@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import './index.css';
 import MeshBackground from './lib/MeshBackground.jsx';
 import GradientRouteSync from './lib/gradient/GradientRouteSync.jsx';
+import Splash from './surfaces/Splash.jsx';
+import { shouldShowSplash } from './lib/splash-state.js';
 import AuthLayout from './layouts/AuthLayout.jsx';
 import UnauthLayout from './layouts/UnauthLayout.jsx';
 import Dashboard from './surfaces/Dashboard.jsx';
@@ -55,10 +57,20 @@ const router = createBrowserRouter([
   },
 ]);
 
+// On the first load of the session the splash overlay is shown ahead of the
+// router (the mesh, mounted separately, starts on the splash gradient and morphs
+// into the destination surface as the splash hands off). The router mounts only
+// once the splash finishes, so nothing renders behind the overlay.
+function AppGate() {
+  const [showSplash, setShowSplash] = useState(shouldShowSplash); // read once
+  if (showSplash) return <Splash onDone={() => setShowSplash(false)} />;
+  return <RouterProvider router={router} />;
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     {/* Mounted once: the renderer prepends its own fixed canvas to <body>. */}
     <MeshBackground />
-    <RouterProvider router={router} />
+    <AppGate />
   </React.StrictMode>,
 );
