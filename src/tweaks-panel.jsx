@@ -193,12 +193,13 @@ function useTweaks(defaults) {
 // flips off in lockstep; the host echoes __deactivate_edit_mode back which
 // is what actually hides the panel.
 function TweaksPanel({ title = 'Tweaks', noDeckControls = false, children }) {
-  // Standalone app: no design-tool host sends __activate_edit_mode, so open the
+  // Standalone app: no design-tool host sends __activate_edit_mode, so show the
   // panel by default — it's the donation-state switcher for the dashboard demo.
   const [open, setOpen] = React.useState(true);
   // Collapse hides the body but keeps the header bar (drag handle + title)
-  // visible — distinct from dismiss, which removes the panel entirely.
-  const [collapsed, setCollapsed] = React.useState(false);
+  // visible — distinct from dismiss, which removes the panel entirely. Start
+  // collapsed so the panel is closed by default but still reachable.
+  const [collapsed, setCollapsed] = React.useState(true);
   const dragRef = React.useRef(null);
   // Auto-inject a rail toggle when a <deck-stage> is on the page. The
   // toggle drives the deck's per-viewer _railVisible via window message;
