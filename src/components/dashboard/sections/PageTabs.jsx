@@ -4,7 +4,7 @@ function PageTabs({ value, onChange }) {
   const tabs = [
   { id: "overview", label: "Overview" },
   { id: "areas", label: "Your impact portfolio" },
-  { id: "history", label: "Transaction history" }];
+  { id: "history", label: "Transactions" }];
 
   return (
     <div className="page-tabs" id="impact-tabs" role="tablist" aria-label="Impact view" style={{ margin: "-16px 0px 48px" }}>

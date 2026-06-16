@@ -90,10 +90,16 @@ function TransactionHistorySection({ phase }) {
           <span style={{ fontSize: "14px" }}>Date Range: Last 12 Months</span>
           <Icon.Caret />
         </button>
-        <button type="button" className="txn-download">
-          <Icon.Download />
-          <span style={{ fontSize: "14px" }}>Download report</span>
-        </button>
+        <div className="txn-toolbar__actions">
+          <button type="button" className="txn-download">
+            <Icon.Download />
+            <span style={{ fontSize: "14px" }}>Download report</span>
+          </button>
+          <button type="button" className="txn-add-funds">
+            <Icon.Plus />
+            <span style={{ fontSize: "14px" }}>Add funds</span>
+          </button>
+        </div>
       </div>
 
       <div className="txn-table" role="table" aria-label="Transactions">
