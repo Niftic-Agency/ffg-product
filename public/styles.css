@@ -1378,6 +1378,98 @@ img {
   color: var(--ffg-surface-950);
 }
 
+/* ---- Overview superselector variant ---- */
+/* Styled radio chips that replace the toggle group; the middle chip opens a
+   multi-select dropdown of giving circles. See OverviewSelector.jsx. */
+.overview-superselector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.overview-superselector__label {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--color-body);
+  margin-right: 7px;
+}
+.overview-superselector__chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: normal;
+  color: var(--color-body);
+  background: transparent;
+  border: 1px solid var(--overlay-dark-10);
+  border-radius: var(--radius);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 140ms ease, color 140ms ease, border-color 140ms ease;
+}
+.overview-superselector__chip:hover {
+  border-color: var(--ffg-surface-950);
+}
+.overview-superselector__chip.is-active {
+  background: var(--ffg-surface-950);
+  color: var(--ffg-surface-wash);
+  border-color: transparent;
+}
+.overview-superselector__circle {
+  position: relative;
+  display: inline-flex;
+}
+/* Fixed width so the chip doesn't reflow as the label swaps between
+   "Giving circles" and "N selected"; chevron pinned to the right. */
+.overview-superselector__chip--menu {
+  width: 156px;
+  justify-content: space-between;
+}
+.overview-superselector__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  background: var(--ffg-surface-wash);
+  border: 1px solid var(--overlay-dark-10);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px var(--overlay-dark-10);
+}
+.overview-superselector__option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--ffg-surface-950);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+}
+.overview-superselector__option--create {
+  color: var(--overlay-dark-60);
+  cursor: pointer;
+  transition: color 140ms ease;
+}
+.overview-superselector__option--create:hover {
+  color: var(--ffg-surface-950);
+}
+.overview-superselector__divider {
+  height: 1px;
+  background: var(--overlay-dark-10);
+}
+
 /* ---- Impact grid ---- */
 .overview-title {
   font-family: "PP Fragment Sans", sans-serif;
