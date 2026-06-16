@@ -1,3 +1,4 @@
+import { Info } from 'lucide-react';
 import { PIcon } from '../icons/PIcon';
 import { statusForName, tierForName } from '../data/statusTaxonomy';
 import { PARTNER_DESC } from '../data/partners';
@@ -48,7 +49,7 @@ function PartnerCard({ partner, onOpen }) {
       <div className="pt-card__foot pt-card__foot--tier">
         <span className="pt-card__tier">{tier * 20}%</span>
         <span className="pt-card__tier-unit">Confidence Level</span>
-        <PIcon.Info className="pt-info" />
+        <Info size={14} strokeWidth={1.5} className="pt-info" />
       </div>
     </article>);
 
