@@ -543,6 +543,7 @@ img {
   border: 1px solid var(--ffg-surface-950);
 }
 .hero-btn--solid:hover { background: #000; }
+.hero-btn--lg { padding: 12px 20px; font-size: 15px; }
 .hero-btn:active { transform: translateY(1px); }
 .hero-btn svg { color: currentColor; }
 
@@ -2366,6 +2367,16 @@ img {
 .impact-badge--health          { --impact-badge-accent: var(--ffg-data-qual-health);          }
 .impact-badge--education       { --impact-badge-accent: var(--ffg-data-qual-education);       }
 .impact-badge--culture         { --impact-badge-accent: var(--ffg-data-qual-culture);         }
+
+/* Verified review-status — special image fill anchored top-right, ~2x zoomed.
+   Keeps the same 1px border as the other impact badges. */
+.impact-badge--verified {
+  position: relative;
+  background-image: url("/assets/verified-fill.jpg");
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: auto 300%;
+}
 .org-row__stats {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -3864,14 +3875,38 @@ img {
   align-items: baseline;
 }
 
-/* Hero */
+/* Hero — 70/30 grid mirroring .pt-photo-loc so the left content column lines up
+   with the accordion section below. Row 1 = identity/desc/tags; row 2 = KPIs (left)
+   + CTA (right). The KPI row and CTA share a row so the button top-aligns with the
+   KPI labels. */
 .pt-hero {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 70fr 30fr;
+  grid-template-areas:
+    "main ."
+    "kpis cta";
+  column-gap: 24px;
+  row-gap: 48px;
+  align-items: start;
   margin-top: 110px;
   margin-bottom: 110px;
   padding: 0;
   position: relative;
+}
+.pt-hero__main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.pt-hero__kpis {
+  grid-area: kpis;
+}
+.pt-hero__aside {
+  grid-area: cta;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
 }
 /* Divider 40px above the photo/location section — rendered as hero bottom border */
 .pt-hero::after {
@@ -3963,12 +3998,19 @@ img {
   display: grid;
   grid-template-columns: 70fr 30fr;
   gap: 24px;
-  align-items: stretch;
+  align-items: start;
   margin: 0 0 110px;
 }
+/* Right column — photo stacked above the location box */
+.pt-photo-loc__side {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+/* Photo scales to the column (location) width */
 .pt-photo-loc .pt-org-photo {
-  aspect-ratio: unset;
-  height: 450px;
+  aspect-ratio: 16 / 9;
+  height: auto;
 }
 .pt-photo-loc__info {
   display: flex;
@@ -3989,13 +4031,14 @@ img {
 }
 .pt-hero__id-text {
   padding-top: 4px;
+  display: flex;
+  flex-direction: column;
 }
 .pt-hero__kpis {
   display: flex;
   flex-direction: row;
   gap: 48px;
   align-items: flex-start;
-  margin-top: 28px;
 }
 .pt-hero__badges {
   display: flex;
@@ -4260,10 +4303,13 @@ img {
   display: grid;
   grid-template-rows: 0fr;
   transition: grid-template-rows 220ms ease;
+  will-change: grid-template-rows;
 }
 .is-open .pt-acc__body {
   grid-template-rows: 1fr;
 }
+/* Bottom padding is 0 while collapsed (so the body clips fully) and transitions
+   to its open value in step with the grid-row height — no instant padding "kick". */
 .pt-acc__body-inner {
   overflow: hidden;
   padding: 0 0 0 32px;
@@ -4271,6 +4317,7 @@ img {
   line-height: 1.55;
   color: var(--ffg-surface-900);
   letter-spacing: 0.005em;
+  transition: padding-bottom 220ms ease;
 }
 .is-open .pt-acc__body-inner {
   padding-bottom: 22px;
@@ -4771,6 +4818,7 @@ img {
   line-height: 1.55;
   color: var(--color-body);
   letter-spacing: 0.005em;
+  text-wrap: balance;
 }
 .pt-side__tags {
   display: flex;

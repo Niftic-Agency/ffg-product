@@ -1,4 +1,4 @@
-import { Info } from 'lucide-react';
+import { BadgeCheck, Info } from 'lucide-react';
 import { PIcon } from '../icons/PIcon';
 import { statusForName, tierForName } from '../data/statusTaxonomy';
 import { PARTNER_DESC } from '../data/partners';
@@ -23,7 +23,7 @@ function PartnerCard({ partner, onOpen }) {
               <span>{partner.name}</span>
               {isVerified &&
               <span className="pt-card__verified" aria-label="Verified" title="Verified">
-                  <PIcon.ShieldCheck />
+                  <BadgeCheck />
                 </span>}
             </h3>
             <div className="pt-card__loc">

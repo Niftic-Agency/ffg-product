@@ -17,6 +17,7 @@ const hashName = (s) => {
 };
 
 const statusForName = (name) => {
+  if (name === "Jesse Tree") return "Verified"; // flagship org — always verified
   // 50% Verified, 33% Ongoing Review, 17% Screening — most partners FFG
   // surfaces are already through the pipeline; only a few are still being
   // assessed. Keeps the directory from reading as “all probationary”.
