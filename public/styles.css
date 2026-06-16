@@ -3660,14 +3660,14 @@ img {
 .pt-card__foot--tier {
   justify-content: flex-start;
   align-items: baseline;
-  gap: 8px;
+  column-gap: 8px;
+  row-gap: 4px;
 }
 .pt-card__tier {
-  font-family: "PP Fragment Sans", sans-serif;
-  font-size: 18px;
   font-weight: 400;
-  color: var(--ffg-surface-950);
-  letter-spacing: -0.005em;
+  font-size: 14px;
+  color: var(--ffg-muted);
+  letter-spacing: 0.005em;
   font-variant-numeric: tabular-nums;
 }
 .pt-card__tier-unit {
@@ -3678,6 +3678,7 @@ img {
 }
 .pt-card__foot--tier .pt-info {
   color: var(--ffg-muted);
+  align-self: center;
 }
 
 /* Pagination */
