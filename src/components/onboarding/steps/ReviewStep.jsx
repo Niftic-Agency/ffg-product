@@ -42,13 +42,15 @@ function ReviewStep({ order, locations, onBack, onSubmit }) {
                       <span className="ob-cause-card__caret"><Ic.Caret /></span>
                     </button>
                     <div className="ob-cause-card__body">
-                      <p className="ob-cause-card__copy" style={{ color: "var(--ffg-muted)", lineHeight: "1.25", fontWeight: "300", fontSize: "16px" }}>{c.description}</p>
-                      {idx === 0 &&
-                      <div className="ob-cause-card__meta">
-                          <Ic.TrendingSm />
-                          <span style={{ fontSize: "14px", fontWeight: "300", textAlign: "left" }}>{c.name} is the highest backed cause area</span>
-                        </div>
-                      }
+                      <div className="ob-cause-card__body-inner">
+                        <p className="ob-cause-card__copy" style={{ color: "var(--ffg-muted)", lineHeight: "1.25", fontWeight: "300", fontSize: "16px" }}>{c.description}</p>
+                        {idx === 0 &&
+                        <div className="ob-cause-card__meta">
+                            <Ic.TrendingSm />
+                            <span style={{ fontSize: "14px", fontWeight: "300", textAlign: "left" }}>{c.name} is the highest backed cause area</span>
+                          </div>
+                        }
+                      </div>
                     </div>
                   </div>);
 

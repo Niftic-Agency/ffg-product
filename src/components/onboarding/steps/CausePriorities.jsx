@@ -70,9 +70,9 @@ function CausePriorities({ order, setOrder }) {
                   aria-label="Toggle description">
                   <Ic.Caret width="24" height="24" />
                 </button>
-                {openId === id && (
+                <div className="ob-cause__desc-wrap">
                   <p className="ob-cause__desc">{cause.description}</p>
-                )}
+                </div>
               </div>
             </div>);
 

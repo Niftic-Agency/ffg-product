@@ -2784,14 +2784,20 @@ img {
 }
 .ob-cause__row.is-open .ob-cause__caret { transform: rotate(180deg); }
 .ob-cause__row.is-open { row-gap: 6px; }
-.ob-cause__desc {
+.ob-cause__desc-wrap {
   grid-column: 1 / -1;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 200ms ease;
+}
+.ob-cause__row.is-open .ob-cause__desc-wrap { grid-template-rows: 1fr; }
+.ob-cause__desc {
+  overflow: hidden;
   font-size: 14px;
   font-weight: 300;
   color: var(--ffg-muted);
   line-height: 1.4;
   margin: 0;
-  padding-top: 4px;
 }
 
 /* SHADCN TARGET — RadioGroup (.ob-goals, .ob-goal) styled as cards */
@@ -3081,10 +3087,15 @@ img {
 }
 .ob-cause-card.is-open .ob-cause-card__caret { transform: rotate(180deg); }
 .ob-cause-card__body {
-  display: none;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 200ms ease;
+}
+.ob-cause-card.is-open .ob-cause-card__body { grid-template-rows: 1fr; }
+.ob-cause-card__body-inner {
+  overflow: hidden;
   padding: 0 20px 20px 58px;
 }
-.ob-cause-card.is-open .ob-cause-card__body { display: block; }
 .ob-cause-card__copy {
   margin: 0 0 12px;
   font-size: 13px;
@@ -3109,8 +3120,9 @@ img {
   width: 100%;
   aspect-ratio: 1 / 1;
   max-width: 360px;
+  overflow: visible;
 }
-.ob-bubbles svg { width: 100%; height: 100%; display: block; }
+.ob-bubbles svg { width: 100%; height: 100%; display: block; overflow: visible; }
 .ob-bubbles text {
   font-family: "PP Fragment Sans", sans-serif;
   font-size: 11px;
