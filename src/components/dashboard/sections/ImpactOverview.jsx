@@ -7,17 +7,21 @@ import { AllocModal } from '../modals/AllocModal';
 import { ImpactChart } from './ImpactChart';
 import { AllocationTreemap } from './AllocationTreemap';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { OverviewSelector } from './OverviewSelector';
 
 /* ====== Impact Overview Section ====== */
-function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
+function ImpactOverview({ accent, totalContrib = 200000, onTabChange, selectorVariant = 'toggle' }) {
   const [allocModalOpen, setAllocModalOpen] = useState(false);
   const [scope, setScope] = useState("you");
+  const [selectedCircles, setSelectedCircles] = useState([]);
   const [areaFilter, setAreaFilter] = useState("all");
   const [modeFilter, setModeFilter] = useState("actual");
   const [periodFilter, setPeriodFilter] = useState("year");
   const [showBalance, setShowBalance] = useState(true);
 
-  const scale = scope === "factory" ? 15 : scope === "circle" ? 5 : 1;
+  // Circle scope scales with the number of selected circles (~2.5× each, so
+  // two circles ≈ the legacy flat 5×). "you" = 1×, "factory" = 15×.
+  const scale = scope === "factory" ? 15 : scope === "circle" ? 2.5 * selectedCircles.length : 1;
   const livesValue = Math.round(34000 * scale).toLocaleString();
   const orgsValue = Math.round(142 * scale).toLocaleString();
   // Contributions scale with scope just like lives/outcomes (you → circle → factory).
@@ -39,15 +43,23 @@ function ImpactOverview({ accent, totalContrib = 200000, onTabChange }) {
     <section className="section-block" aria-label="Impact overview">
       <div className="overview-topbar" data-comment-anchor="6bc2ea5625-div-1335-7">
         <h2 className="overview-title">What you're building</h2>
-        <ToggleGroup
-            variant="outline"
-            value={[scope]}
-            onValueChange={(vals) => vals[0] && setScope(vals[0])}
-            aria-label="Impact scope">
-          <ToggleGroupItem value="you">Your impact</ToggleGroupItem>
-          <ToggleGroupItem value="circle">Circle impact</ToggleGroupItem>
-          <ToggleGroupItem value="factory">Factory impact</ToggleGroupItem>
-        </ToggleGroup>
+        {selectorVariant === 'super' ? (
+          <OverviewSelector
+              scope={scope}
+              selectedCircles={selectedCircles}
+              onScopeChange={setScope}
+              onCirclesChange={setSelectedCircles} />
+        ) : (
+          <ToggleGroup
+              variant="outline"
+              value={[scope]}
+              onValueChange={(vals) => vals[0] && setScope(vals[0])}
+              aria-label="Impact scope">
+            <ToggleGroupItem value="you">Your impact</ToggleGroupItem>
+            <ToggleGroupItem value="circle">Circle impact</ToggleGroupItem>
+            <ToggleGroupItem value="factory">Factory impact</ToggleGroupItem>
+          </ToggleGroup>
+        )}
       </div>
       <div className="stats-row">
         <Stat scope={scope} label="Contributions" value={"$" + contribNum.toLocaleString()} rawNum={contribNum} prefix="$" trend={trends.contrib} onClick={() => onTabChange && onTabChange("history")} />

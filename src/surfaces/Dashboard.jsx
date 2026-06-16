@@ -26,6 +26,7 @@ const TWEAK_DEFAULTS = {
   allocationCard: false,
   update: 'none',
   stepCount: 4,
+  overviewSelector: 'toggle',
 };
 
 // Copy presets for the non-status update types, rehomed from the old hero
@@ -140,7 +141,7 @@ export default function Dashboard() {
           confirmedAmount={allocAmount} />
         <UpdatesArea key={update?.type || 'none'} update={update} />
         <PageTabs value={pageTab} onChange={setPageTab} />
-        {pageTab === 'overview' && <ImpactOverview accent={t.accent} totalContrib={allocAmount} onTabChange={setPageTab} />}
+        {pageTab === 'overview' && <ImpactOverview accent={t.accent} totalContrib={allocAmount} onTabChange={setPageTab} selectorVariant={t.overviewSelector} />}
         {pageTab === 'areas' && <ImpactAreasSection cohortSize={t.cohortSize} />}
         {pageTab === 'history' && <TransactionHistorySection phase={t.phase} />}
         {pageTab === 'overview' && <UpdatesSection items={UPDATE_ITEMS} />}
@@ -175,6 +176,12 @@ export default function Dashboard() {
           value={t.stepCount}
           options={[3, 4, 5]}
           onChange={(v) => setTweak('stepCount', v)} />
+        <TweakSection label="Overview" />
+        <TweakRadio
+          label="Scope selector"
+          value={t.overviewSelector}
+          options={['toggle', 'super']}
+          onChange={(v) => setTweak('overviewSelector', v)} />
       </TweaksPanel>
     </>
   );
