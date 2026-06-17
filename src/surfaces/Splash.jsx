@@ -53,8 +53,8 @@ export default function Splash({ onDone }) {
       // fade-out at 3.35s (the morph hands off to the destination surface as the
       // overlay and logo fade and lift), router mounts ~0.9s later.
       timers.push(setTimeout(() => setEntered(true), 1300));
-      timers.push(setTimeout(() => { endSplash(path); setLeaving(true); }, 3350));
-      timers.push(setTimeout(() => { markSplashSeen(); onDone(); }, 4250));
+      timers.push(setTimeout(() => { endSplash(path); setLeaving(true); }, 2850));
+      timers.push(setTimeout(() => { markSplashSeen(); onDone(); }, 3650));
     }
     return () => timers.forEach(clearTimeout);
   }, [onDone]);
