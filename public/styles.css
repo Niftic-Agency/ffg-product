@@ -5131,7 +5131,9 @@ img {
     gap: 32px;
   }
   .alloc-card {
+    flex: 0 0 auto;
     width: 100%;
+    max-width: none;
     align-self: auto;
   }
   .hero-actions {
