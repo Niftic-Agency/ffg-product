@@ -1,4 +1,5 @@
-import { BadgeCheck, Clock, Plus, Search, ShieldCheck } from 'lucide-react';
+import { useState } from 'react';
+import { BadgeCheck, Check, Clock, Plus, Search, ShieldCheck } from 'lucide-react';
 import { PIcon } from '../icons/PIcon';
 import { PARTNER_DESC } from '../data/partners';
 import { statusForName } from '../data/statusTaxonomy';
@@ -26,7 +27,7 @@ function ReviewStatusBadge({ status }) {
   if (status === "Verified")
     return (
       <span className="impact-badge impact-badge--verified">
-        <BadgeCheck size={14} color="var(--ffg-muted)" /> <span style={BADGE_TEXT}>Verified</span>
+        <BadgeCheck size={14} color="var(--ffg-surface-950)" /> <span style={{ ...BADGE_TEXT, color: "var(--ffg-surface-950)" }}>Verified</span>
       </span>);
 
   const Icon = status === "Screening" ? Clock : Search;
@@ -49,6 +50,7 @@ function PartnerDetail({ partner, onBack }) {
   const allocData = partner.tags.map((name, i) => ({ name, size: split[i] }));
   const status = statusForName(partner.name);
   const isVerified = status === "Verified";
+  const [added, setAdded] = useState(false);
   return (
     <div className="pt-detail">
       {/* Top bar — Back link + right-side badges */}
@@ -104,8 +106,13 @@ function PartnerDetail({ partner, onBack }) {
 
         {/* CTA — right column, top-aligned with the KPI labels */}
         <div className="pt-hero__aside">
-          <button className="hero-btn hero-btn--solid hero-btn--lg">
-            <Plus size={18} /> Add to portfolio
+          <button
+            className={`hero-btn hero-btn--lg ${added ? "hero-btn--solid" : "hero-btn--ghost"}`}
+            onClick={() => setAdded((a) => !a)}
+          >
+            {added
+              ? <><Check size={18} /> Added to portfolio</>
+              : <><Plus size={18} /> Add to portfolio</>}
           </button>
         </div>
       </section>
