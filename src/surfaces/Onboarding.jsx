@@ -11,7 +11,7 @@ import { ReviewStep } from '../components/onboarding/steps/ReviewStep.jsx';
 import { Submitted } from '../components/onboarding/steps/Submitted.jsx';
 import { StepChrome } from '../components/onboarding/atoms/StepChrome.jsx';
 import { Ic } from '../components/onboarding/icons/Ic.jsx';
-import { morphToGradient } from '../lib/gradient/controller.js';
+import { morphToGradient, pulse as pulseGradient } from '../lib/gradient/controller.js';
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -36,6 +36,7 @@ export default function Onboarding() {
   const stepNumber = idx === 0 || idx === 7 ? 0 : idx; // 1..6 inside questionnaire
 
   const next = useCallback(() => {
+    if (idx >= 1) pulseGradient();
     goTo(SCREENS[Math.min(idx + 1, SCREENS.length - 1)]);
   }, [idx, goTo]);
   const back = useCallback(() => {

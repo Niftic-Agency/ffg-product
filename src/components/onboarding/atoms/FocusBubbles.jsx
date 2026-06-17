@@ -18,25 +18,6 @@ function FocusBubbles({ top3 }) {
 
   const remaining = CAUSE_AREAS.filter(c => !top3.includes(c.id));
 
-  const visibleCauses = [
-    ...top3.map(id => CAUSE_BY_ID[id]),
-    ...remaining.slice(0, DECO.length),
-  ];
-
-  const gradientDefs = visibleCauses.map(cause => {
-    const cat = CATEGORY_ICONS[cause.name];
-    if (!cat) return null;
-    const id = `grad-${cause.name.toLowerCase().replace(/\s+/g, '-')}`;
-    return (
-      <linearGradient key={id} id={id} x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%"   stopColor={cat.color} />
-        <stop offset="100%" stopColor={cat.colorEnd || cat.color} />
-      </linearGradient>
-    );
-  }).filter(Boolean);
-
-  const gradId = name => `grad-${name.toLowerCase().replace(/\s+/g, '-')}`;
-
   // Unique slow breathing params per bubble — golden-ratio-spaced phases
   const BREATH = ALL.map((_, i) => ({
     ax: 2 + (i % 3) * 0.8,           // x amplitude 2–4 px
@@ -115,16 +96,12 @@ function FocusBubbles({ top3 }) {
   return (
     <div className="ob-bubbles" aria-hidden="true">
       <svg viewBox="0 0 320 320">
-        <defs>{gradientDefs}</defs>
-
         {DECO.map((d, i) => {
-          const cause  = remaining[i % remaining.length];
-          const stroke = cause ? `url(#${gradId(cause.name)})` : 'var(--ffg-surface-950)';
           const delay  = `${(i + top3.length) * 180}ms`;
           return (
             <g key={`d${i}`} style={{ animation: `ob-bubble-in 600ms ease both`, animationDelay: delay }}>
               <g ref={el => { gRefs.current[HOME.length + i] = el; }}>
-                <circle cx={d.cx} cy={d.cy} r={d.r} fill="none" stroke={stroke} strokeWidth="1" />
+                <circle cx={d.cx} cy={d.cy} r={d.r} fill="none" stroke="var(--ffg-surface-950)" strokeWidth="1" />
               </g>
             </g>
           );
@@ -134,7 +111,6 @@ function FocusBubbles({ top3 }) {
           const c         = CAUSE_BY_ID[id];
           const p         = HOME[i];
           const cat       = CATEGORY_ICONS[c.name];
-          const stroke    = cat ? `url(#${gradId(c.name)})` : 'var(--ffg-surface-950)';
           const fillColor = cat ? cat.color : 'var(--ffg-surface-950)';
           const delay     = `${i * 180}ms`;
           return (
@@ -144,12 +120,12 @@ function FocusBubbles({ top3 }) {
                   cx={p.cx} cy={p.cy} r={p.r}
                   fill={fillColor} fillOpacity="0" stroke="none"
                   style={{ transition: 'fill-opacity 120ms ease' }} />
-                <circle cx={p.cx} cy={p.cy} r={p.r} fill="none" stroke={stroke} strokeWidth="1" />
-                <text x={p.cx} y={p.cy + 4} textAnchor="middle">
-                  {c.name.split(' ').map((w, idx) =>
-                    <tspan key={idx} x={p.cx} dy={idx === 0 ? 0 : 14}>{w}</tspan>
-                  )}
-                </text>
+                <circle cx={p.cx} cy={p.cy} r={p.r} fill="none" stroke="var(--ffg-surface-950)" strokeWidth="1" />
+                {cat?.svg &&
+                  <g className="ob-bubble-icon" transform={`translate(${p.cx},${p.cy}) scale(${p.r / 16})`} style={{ color: 'var(--ffg-surface-950)' }}>
+                    <g transform="translate(-8,-8)">{cat.svg}</g>
+                  </g>
+                }
               </g>
             </g>
           );
