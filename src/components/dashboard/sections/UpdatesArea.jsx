@@ -35,6 +35,8 @@ function UpdatesArea({ update }) {
 
   const isStatus = update.type === "update-status";
   const modifier = update.type.replace("update-", ""); // status|action|advisory|general
+  const calloutIcons = { action: Icon.Bell, advisory: Icon.Clock, general: Icon.Info };
+  const CalloutIcon = calloutIcons[modifier];
 
   return (
     <section
@@ -69,6 +71,9 @@ function UpdatesArea({ update }) {
         </>
       ) : (
         <div className={`allocated-callout allocated-callout--${modifier}`}>
+          {CalloutIcon && (
+            <span className="allocated-callout__icon"><CalloutIcon /></span>
+          )}
           <div className="allocated-callout__text">
             {update.title && <div className="allocated-callout__title">{update.title}</div>}
             {update.copy && <p className="allocated-callout__copy">{update.copy}</p>}
