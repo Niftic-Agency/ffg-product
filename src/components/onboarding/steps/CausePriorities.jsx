@@ -71,7 +71,9 @@ function CausePriorities({ order, setOrder }) {
                   <Ic.Caret width="24" height="24" />
                 </button>
                 <div className="ob-cause__desc-wrap">
-                  <p className="ob-cause__desc">{cause.description}</p>
+                  <div className="ob-cause__desc-inner">
+                    <p className="ob-cause__desc">{cause.description}</p>
+                  </div>
                 </div>
               </div>
             </div>);

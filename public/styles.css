@@ -2725,10 +2725,11 @@ img {
   letter-spacing: 0.005em;
 }
 .ob-cause__row {
+  position: relative;
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr) 28px 28px;
   align-items: center;
-  gap: 14px;
+  gap: 0 14px;
   padding: 14px 18px;
   border: 1px solid var(--ffg-divider);
   border-radius: var(--radius-sm);
@@ -2747,10 +2748,23 @@ img {
   background: var(--ffg-surface-50);
   box-shadow: 0 8px 24px var(--overlay-dark-20);
   border-color: var(--ffg-surface-950);
+  opacity: 0.45;
   z-index: 2;
 }
+/* Clear drop target: highlight the hovered row and float an insertion bar above it */
 .ob-cause__row.is-over {
-  border-top: 1.5px solid var(--ffg-surface-950);
+  border-color: var(--ffg-surface-950);
+  background: var(--ffg-surface-50);
+}
+.ob-cause__row.is-over::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -6px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--ffg-surface-950);
 }
 .ob-cause__handle {
   display: inline-flex;
@@ -2767,7 +2781,7 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--ffg-surface-950);
+  color: var(--ffg-surface-600);
 }
 .ob-cause__caret {
   display: inline-flex;
@@ -2783,21 +2797,25 @@ img {
   transition: transform 140ms ease;
 }
 .ob-cause__row.is-open .ob-cause__caret { transform: rotate(180deg); }
-.ob-cause__row.is-open { row-gap: 6px; }
 .ob-cause__desc-wrap {
   grid-column: 1 / -1;
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 200ms ease;
+  transition: grid-template-rows 200ms ease-out;
 }
 .ob-cause__row.is-open .ob-cause__desc-wrap { grid-template-rows: 1fr; }
-.ob-cause__desc {
+.ob-cause__desc-inner {
+  min-height: 0;
   overflow: hidden;
+}
+.ob-cause__desc {
   font-size: 14px;
   font-weight: 300;
   color: var(--ffg-muted);
   line-height: 1.4;
   margin: 0;
+  padding-top: 6px;
+  padding-left: 42px; /* align with .ob-cause__name (28px handle col + 14px gap) */
 }
 
 /* SHADCN TARGET — RadioGroup (.ob-goals, .ob-goal) styled as cards */
@@ -3030,7 +3048,7 @@ img {
 }
 .ob-review__section { margin-bottom: 28px; }
 .ob-review__h3 {
-  font-family: "PP Fragment Glare", serif;
+  font-family: "PP Fragment Sans", sans-serif;
   font-style: normal;
   font-weight: 300;
   font-size: 16px;
@@ -3083,17 +3101,26 @@ img {
 .ob-cause-card__caret {
   color: var(--color-icon);
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transform-origin: center;
   transition: transform 200ms ease;
 }
 .ob-cause-card.is-open .ob-cause-card__caret { transform: rotate(180deg); }
 .ob-cause-card__body {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 200ms ease;
+  min-height: 0;
+  transition: grid-template-rows 200ms ease-out;
 }
 .ob-cause-card.is-open .ob-cause-card__body { grid-template-rows: 1fr; }
 .ob-cause-card__body-inner {
+  min-height: 0;
   overflow: hidden;
+}
+.ob-cause-card__body-pad {
   padding: 0 20px 20px 58px;
 }
 .ob-cause-card__copy {
@@ -3123,6 +3150,9 @@ img {
   overflow: visible;
 }
 .ob-bubbles svg { width: 100%; height: 100%; display: block; overflow: visible; }
+/* Icons inside bubbles are scaled up via a transform — keep a constant 1.5 stroke */
+.ob-bubble-icon svg { stroke-width: 1.5; }
+.ob-bubble-icon svg * { vector-effect: non-scaling-stroke; }
 .ob-bubbles text {
   font-family: "PP Fragment Sans", sans-serif;
   font-size: 11px;
