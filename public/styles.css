@@ -5663,19 +5663,19 @@ img {
 }
 .ffg-splash__wordmark {
   display: block;
-  width: min(330px, 48vw);
+  width: min(297px, 43.2vw);
 }
 .ffg-splash__logo {
   display: block;
   width: 100%;
   height: auto;
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(20px);
   transition: opacity 720ms cubic-bezier(0.22, 1, 0.36, 1),
               transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .ffg-splash__logo--in { opacity: 1; transform: translateY(0); }    /* fade in + up */
-.ffg-splash--out .ffg-splash__logo { opacity: 0; transform: translateY(-10px); }  /* fade out + up */
+.ffg-splash--out .ffg-splash__logo { opacity: 0; transform: translateY(-20px); }  /* fade out + up */
 /* Reduced motion: show the wordmark at once, no lift, no transition on exit. */
 .ffg-splash--reduced .ffg-splash__logo {
   transition: none;
