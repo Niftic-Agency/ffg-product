@@ -49,9 +49,9 @@ export default function Splash({ onDone }) {
       timers.push(setTimeout(() => { endSplash(path, 400); setLeaving(true); }, 500));
       timers.push(setTimeout(() => { markSplashSeen(); onDone(); }, 800));
     } else {
-      // Logo fades in + slides up at 1.3s; hold the finished splash, then morph +
+      // Logo fades in at 1.3s; hold the finished splash, then morph +
       // fade-out at 3.35s (the morph hands off to the destination surface as the
-      // overlay and logo fade and lift), router mounts ~0.9s later.
+      // overlay and logo fade), router mounts ~0.9s later.
       timers.push(setTimeout(() => setEntered(true), 1300));
       timers.push(setTimeout(() => { endSplash(path); setLeaving(true); }, 2850));
       timers.push(setTimeout(() => { markSplashSeen(); onDone(); }, 3650));
