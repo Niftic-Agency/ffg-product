@@ -880,7 +880,7 @@ img {
 .nav-dropdown__item--destructive:hover svg { color: #b91c1c; }
 .nav-dropdown__sep {
   height: 1px;
-  background: var(--ffg-divider);
+  background: var(--overlay-dark-10);
   margin: 4px 0;
 }
 /* Mobile hamburger menu — hidden until the md breakpoint folds the nav links in */
@@ -1437,12 +1437,6 @@ img {
   align-items: center;
   gap: 8px;
   margin-left: auto;
-}
-.overview-superselector__label {
-  font-size: 14px;
-  font-weight: 300;
-  color: var(--color-body);
-  margin-right: 7px;
 }
 .overview-superselector__chip {
   display: inline-flex;
@@ -4486,9 +4480,7 @@ img {
   width: 100%;
   min-height: 0;
 }
-/* Focus bubbles — 10% cause color fill on hover, same treatment as treemap. */
 .ob-bubble-group { cursor: default; }
-.ob-bubble-group:hover .ob-bubble__fill { fill-opacity: 0.1; }
 
 /* Hairline cell; fills with a 10% wash of its cause color on hover. */
 .pt-tm__rect {
@@ -5653,9 +5645,9 @@ img {
 /* ── Splash ── */
 /* Initial-load splash. Full-viewport, transparent so the body-level mesh canvas
    shows through (the router isn't mounted yet, so nothing else is behind it).
-   The "factory for good" wordmark is sliced into three abutting <svg> words that
-   each fade in and up on a stagger; the overlay fades out as the mesh morphs
-   into the destination surface. See src/surfaces/Splash.jsx. */
+   The "factory for good" wordmark is a single <svg> that fades in and slides up
+   on entrance, then fades out and lifts on exit while the overlay fades and the
+   mesh morphs into the destination surface. See src/surfaces/Splash.jsx. */
 .ffg-splash {
   position: fixed;
   inset: 0;
@@ -5670,32 +5662,30 @@ img {
   opacity: 0;
 }
 .ffg-splash__wordmark {
-  display: flex;
-  align-items: baseline;
-  width: min(440px, 64vw);
-}
-.ffg-splash__word {
   display: block;
+  width: min(330px, 48vw);
+}
+.ffg-splash__logo {
+  display: block;
+  width: 100%;
   height: auto;
   opacity: 0;
-  transform: translateY(12px);
-  animation: ffg-splash-word 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform: translateY(10px);
+  transition: opacity 720ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-@keyframes ffg-splash-word {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-/* Reduced motion: show the whole wordmark at once, no stagger, no lift, no fade
-   transition on exit. */
-.ffg-splash--reduced .ffg-splash__word {
-  animation: none;
+.ffg-splash__logo--in { opacity: 1; transform: translateY(0); }    /* fade in + up */
+.ffg-splash--out .ffg-splash__logo { opacity: 0; transform: translateY(-10px); }  /* fade out + up */
+/* Reduced motion: show the wordmark at once, no lift, no transition on exit. */
+.ffg-splash--reduced .ffg-splash__logo {
+  transition: none;
   opacity: 1;
   transform: none;
 }
 @media (prefers-reduced-motion: reduce) {
   .ffg-splash { transition: none; }
-  .ffg-splash__word {
-    animation: none;
+  .ffg-splash__logo {
+    transition: none;
     opacity: 1;
     transform: none;
   }

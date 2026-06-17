@@ -55,8 +55,6 @@ function OverviewSelector({ scope, selectedCircles, onScopeChange, onCirclesChan
 
   return (
     <div className="overview-superselector" role="radiogroup" aria-label="Impact scope">
-      <span className="overview-superselector__label">View</span>
-
       <button
         type="button"
         role="radio"

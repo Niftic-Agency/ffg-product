@@ -27,14 +27,6 @@ const PATHS = [
   'M346.968 56.8514L352.036 36.1941L354.612 26.0307H359.431L356.855 36.1941L356.689 36.7725C359.265 32.3106 365.33 25.4524 375.217 25.3697L374.137 29.9143C364.665 29.9143 357.437 35.4505 354.695 44.8702L351.704 56.7688C351.039 59.3303 350.125 63.2965 349.128 66.9322H344.309L346.885 56.7688L346.968 56.8514Z',
 ];
 
-// Contiguous x-windows over the 588-wide wordmark, one per word. Heights match
-// the viewBox; widths are the window widths so the slices abut into the full logo.
-const WORDS = [
-  { key: 'factory', vb: '0 0 264 88', w: 264 },
-  { key: 'for', vb: '264 0 118 88', w: 118 },
-  { key: 'good', vb: '382 0 206 88', w: 206 },
-];
-
 const prefersReducedMotion = () => {
   try {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -45,6 +37,7 @@ const prefersReducedMotion = () => {
 
 export default function Splash({ onDone }) {
   const [leaving, setLeaving] = useState(false);
+  const [entered, setEntered] = useState(false);
   const reduced = useRef(prefersReducedMotion());
 
   useEffect(() => {
@@ -52,13 +45,14 @@ export default function Splash({ onDone }) {
     const timers = [];
     if (reduced.current) {
       // No staggered reveal or long morph: brief hold, quick hand-off.
+      setEntered(true);
       timers.push(setTimeout(() => { endSplash(path, 400); setLeaving(true); }, 500));
       timers.push(setTimeout(() => { markSplashSeen(); onDone(); }, 800));
     } else {
-      // Logo starts at 1.3s and reveals over the slower (720ms) staggered fade,
-      // settling ~2.55s; hold the finished splash ~0.8s, then morph + fade-out at
-      // 3.35s (the morph hands off to the destination surface as the overlay
-      // fades), router mounts ~0.9s later.
+      // Logo fades in + slides up at 1.3s; hold the finished splash, then morph +
+      // fade-out at 3.35s (the morph hands off to the destination surface as the
+      // overlay and logo fade and lift), router mounts ~0.9s later.
+      timers.push(setTimeout(() => setEntered(true), 1300));
       timers.push(setTimeout(() => { endSplash(path); setLeaving(true); }, 3350));
       timers.push(setTimeout(() => { markSplashSeen(); onDone(); }, 4250));
     }
@@ -71,20 +65,16 @@ export default function Splash({ onDone }) {
       aria-label="Factory for Good"
     >
       <div className="ffg-splash__wordmark">
-        {WORDS.map((word, i) => (
-          <svg
-            key={word.key}
-            className="ffg-splash__word"
-            style={{ animationDelay: `${1300 + i * 264}ms`, width: `${word.w / 588 * 100}%` }}
-            viewBox={word.vb}
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            {PATHS.map((d, j) => (
-              <path key={j} d={d} fill="#2B2423" />
-            ))}
-          </svg>
-        ))}
+        <svg
+          className={`ffg-splash__logo${entered ? ' ffg-splash__logo--in' : ''}`}
+          viewBox="0 0 588 88"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          {PATHS.map((d, j) => (
+            <path key={j} d={d} fill="#2B2423" />
+          ))}
+        </svg>
       </div>
     </div>
   );

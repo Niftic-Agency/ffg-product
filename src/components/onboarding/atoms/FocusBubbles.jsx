@@ -122,7 +122,7 @@ function FocusBubbles({ top3 }) {
                   style={{ transition: 'fill-opacity 120ms ease' }} />
                 <circle cx={p.cx} cy={p.cy} r={p.r} fill="none" stroke="var(--ffg-surface-950)" strokeWidth="1" />
                 {cat?.svg &&
-                  <g className="ob-bubble-icon" transform={`translate(${p.cx},${p.cy}) scale(${p.r / 16})`} style={{ color: 'var(--ffg-surface-950)' }}>
+                  <g className="ob-bubble-icon" transform={`translate(${p.cx},${p.cy}) scale(${Math.min(p.r, 32) / 16})`} style={{ color: 'var(--ffg-surface-950)' }}>
                     <g transform="translate(-8,-8)">{cat.svg}</g>
                   </g>
                 }
