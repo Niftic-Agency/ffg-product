@@ -4,7 +4,7 @@ import React from 'react';
 // authenticated nav, but the right side swaps the notifications/avatar for
 // sign-in CTAs.
 import { Link } from 'react-router-dom';
-import { NavLinks, NAV_LINKS_UNAUTH } from './topnav-auth.jsx';
+import { NavLinks, NavMenu, NAV_LINKS_UNAUTH } from './topnav-auth.jsx';
 
 function TopNavUnauth({ padded = true, stuck = false }) {
   return (
@@ -15,6 +15,7 @@ function TopNavUnauth({ padded = true, stuck = false }) {
         </Link>
         <div className="nav-right">
           <NavLinks links={NAV_LINKS_UNAUTH} />
+          <NavMenu links={NAV_LINKS_UNAUTH} />
           <Link className="nav-cta" to="/dashboard">Log in</Link>
           <Link className="nav-cta nav-cta--solid" to="/onboarding">Get started</Link>
         </div>

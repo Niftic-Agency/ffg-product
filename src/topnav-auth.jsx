@@ -36,7 +36,69 @@ function NavLinks({ links = NAV_LINKS }) {
   );
 }
 
+// Compact mobile menu: a hamburger button that folds the primary nav links into
+// a dropdown below the md breakpoint. Mirrors the avatar-menu pattern in TopNav
+// (own state + click-outside + Escape) and reuses the .nav-dropdown styling.
+function NavMenu({ links = NAV_LINKS }) {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    const onKey = (e) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div className="nav-menu" ref={ref}>
+      <button
+        type="button"
+        className={"icon-btn" + (open ? " is-open" : "")}
+        aria-label="Menu"
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <Icon.Menu />
+      </button>
+      {open && (
+        <div className="nav-dropdown nav-dropdown--menu" role="menu">
+          <div className="nav-dropdown__group">
+            {links.map(({ label, to }) => (
+              <NavLink
+                key={to}
+                to={to}
+                role="menuitem"
+                className={({ isActive }) =>
+                  'nav-dropdown__item' + (isActive ? ' is-active' : '')}
+                onClick={() => setOpen(false)}
+              >
+                <span>{label}</span>
+              </NavLink>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 const Icon = {
+  Menu: (p) =>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu" {...p}>
+      <line x1="4" x2="20" y1="6" y2="6" />
+      <line x1="4" x2="20" y1="12" y2="12" />
+      <line x1="4" x2="20" y1="18" y2="18" />
+    </svg>,
+
   Bell: (p) =>
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-bell" {...p}>
       <path d="M10.268 21a2 2 0 0 0 3.464 0" />
@@ -90,6 +152,7 @@ function TopNav({ padded = true, stuck = false }) {
         </Link>
         <div className="nav-right">
           <NavLinks />
+          <NavMenu links={NAV_LINKS} />
           <button className="icon-btn" aria-label="Notifications">
             <Icon.Bell />
           </button>
@@ -132,4 +195,4 @@ function TopNav({ padded = true, stuck = false }) {
   );
 }
 
-export { Icon, NAV_LINKS, NAV_LINKS_UNAUTH, NavLinks, TopNav, TopNav as FFGTopNav };
+export { Icon, NAV_LINKS, NAV_LINKS_UNAUTH, NavLinks, NavMenu, TopNav, TopNav as FFGTopNav };

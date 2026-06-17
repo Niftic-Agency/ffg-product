@@ -883,6 +883,17 @@ img {
   background: var(--ffg-divider);
   margin: 4px 0;
 }
+/* Mobile hamburger menu — hidden until the md breakpoint folds the nav links in */
+.nav-menu {
+  position: relative;
+  display: none;
+}
+.nav-dropdown--menu { min-width: 180px; }
+.nav-dropdown--menu .nav-dropdown__item { text-decoration: none; }
+.nav-dropdown--menu .nav-dropdown__item.is-active {
+  background: var(--overlay-dark-10);
+  font-weight: 400;
+}
 
 /* ---- Hero phase pill ---- */
 /* ---- Status pill (unified) ---- */
@@ -1350,6 +1361,25 @@ img {
 .page-tabs__tab.is-active {
   color: var(--ffg-surface-950);
   border-bottom-color: var(--ffg-surface-950);
+}
+/* Dropdown variant — shown only below the sm breakpoint (see media query) */
+.page-tabs-select {
+  display: none;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--ffg-surface-50);
+  border: 1px solid var(--overlay-dark-10);
+  border-radius: var(--radius-sm);
+  padding: 12px 40px 12px 16px;
+  font-family: "PP Fragment Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: var(--ffg-surface-950);
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231b1b1a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
 }
 
 /* ---- Section-head scope toggle ---- */
@@ -5121,10 +5151,15 @@ img {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  /* ── Impact chart + treemap: stack ── */
+  /* ── Impact chart + treemap: stack, full-width (minmax(0,…) so the recharts
+     responsive container shrinks instead of clipping) ── */
   .impact {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 40px;
+  }
+  .chart-card,
+  .alloc-treemap-card {
+    min-width: 0;
   }
   .chart-wrap {
     height: 240px;
@@ -5180,10 +5215,76 @@ img {
     grid-template-columns: repeat(3, max-content);
     gap: 40px;
   }
+
+  /* ── Partner hero: single column (identity → KPIs → CTA) ──
+     minmax(0,1fr) caps the column at the container width so the KPI row's
+     intrinsic width can't push the whole hero into horizontal overflow. */
+  .pt-hero {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "main"
+      "kpis"
+      "cta";
+    row-gap: 32px;
+  }
+  .pt-hero__aside {
+    justify-content: flex-start;
+  }
+
+  /* ── Partner metrics: stack, full-width charts ── */
+  .pt-metrics-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pt-metrics-left,
+  .pt-metrics-right {
+    min-width: 0;
+  }
 }
 
 /* ── Below md (< 768px) — tablet portrait ── */
 @media (max-width: 767px) {
+  /* ── Topnav: fold primary links into the hamburger menu ── */
+  .nav-links {
+    display: none;
+  }
+  .nav-menu {
+    display: inline-flex;
+  }
+
+  /* ── Transaction table: drop EIN + user; 5 cells → 5 tracks, aligned ── */
+  .txn-row {
+    grid-template-columns: 78px minmax(0, 1fr) 112px 88px 40px;
+    gap: 12px;
+  }
+  .txn-cell--ein,
+  .txn-cell--user {
+    display: none;
+  }
+
+  /* ── Updates callout: stack icon → copy → button ── */
+  .allocated-callout--action,
+  .allocated-callout--advisory,
+  .allocated-callout--general {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding-right: 24px;
+  }
+  .allocated-callout--action .hero-btn {
+    align-self: flex-start;
+  }
+
+  /* ── Partner accordion + photo/location: single column ── */
+  .pt-photo-loc {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── Partner hero: wrap KPI row so it fits the narrow column ── */
+  .pt-hero__kpis {
+    flex-wrap: wrap;
+    gap: 24px 40px;
+  }
+
   /* ── Shell ── */
   .shell {
     padding: 120px 20px 64px;
@@ -5325,6 +5426,14 @@ img {
 
 /* ── Below sm (< 640px) — large phones ── */
 @media (max-width: 639px) {
+  /* ── Page tabs → dropdown ── */
+  .page-tabs {
+    display: none;
+  }
+  .page-tabs-select {
+    display: block;
+  }
+
   /* ── Shell ── */
   .shell {
     padding: 100px 16px 56px;
@@ -5336,11 +5445,6 @@ img {
   .nav-inner {
     padding-left: 16px;
     padding-right: 16px;
-  }
-
-  /* ── Nav: hide non-essential right items ── */
-  .nav-right .icon-btn:first-child {
-    display: none; /* bell — space-constrained */
   }
 
   /* ── Hero ── */
@@ -5414,11 +5518,60 @@ img {
     gap: 12px;
   }
 
-  /* ── Transaction table: drop EIN, keep date/org/status/amount/download ── */
-  .txn-row {
-    grid-template-columns: 80px minmax(0, 1fr) 120px 90px 40px;
+  /* ── Transaction table → stacked cards ──
+     Column headers and the row grid don't fit a phone, so each row becomes a
+     two-row card: org + amount on top, date + status below. Sort headers,
+     user, EIN and the per-row download are dropped (sort defaults to newest). */
+  .txn-table {
+    border-top: none;
   }
-  .txn-cell--ein { display: none; }
+  .txn-row--head {
+    display: none;
+  }
+  .txn-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "name amount"
+      "date status";
+    gap: 6px 12px;
+    padding: 16px 4px;
+    align-items: baseline;
+  }
+  .txn-cell--name {
+    grid-area: name;
+    font-weight: 500;
+    color: var(--ffg-surface-950);
+  }
+  .txn-cell--amount {
+    grid-area: amount;
+  }
+  .txn-cell--date {
+    grid-area: date;
+  }
+  .txn-cell--status {
+    grid-area: status;
+    justify-self: end;
+  }
+  .txn-cell--user,
+  .txn-cell--ein,
+  .txn-cell--menu {
+    display: none;
+  }
+
+  /* ── Transaction toolbar: stack range pill above full-width actions ── */
+  .txn-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .txn-toolbar__actions {
+    width: 100%;
+  }
+  .txn-download,
+  .txn-add-funds {
+    flex: 1;
+    justify-content: center;
+  }
 
   /* ── Confirm banner: stack ── */
   .confirm-banner {
