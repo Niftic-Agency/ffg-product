@@ -554,9 +554,22 @@ img {
   align-items: center;
   gap: 24px;
   padding: 18px 24px;
-  background: linear-gradient(to right, var(--ffg-surface-wash), var(--ffg-light));
+  background: var(--ffg-surface-wash);
   border: 1px solid var(--overlay-dark-10);
   border-radius: var(--radius);
+}
+.allocated-callout__icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+}
+/* Normalize every callout icon to a consistent size + surface-950 stroke. The
+   !important beats Icon.Info's inline muted stroke without altering its other
+   (dashboard) usages. */
+.allocated-callout__icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--ffg-surface-950) !important;
 }
 .allocated-callout__text {
   flex: 1 1 auto;
@@ -585,6 +598,13 @@ img {
 .allocated-callout--advisory,
 .allocated-callout--general {
   padding-right: 48px;
+  align-items: flex-start;
+  gap: 16px;
+  background-color: var(--ffg-surface-wash);
+  background-image: url("/assets/update-fill.jpg");
+  background-repeat: no-repeat;
+  background-position: top left;
+  background-size: auto;
 }
 .allocated-callout--action .hero-btn {
   flex: 0 0 auto;
