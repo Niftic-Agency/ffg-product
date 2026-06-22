@@ -1,30 +1,79 @@
 import { useState } from 'react';
+import { Toaster } from 'sonner';
 
-// Living index of FFG-native components — the hand-built ones with no shadcn
-// equivalent. Sibling of /shadcn-demo (which covers the themed @/components/ui
-// primitives). Each entry renders every variant live, with its surface, source
-// path, CSS class family, and migration status. Route: /inventory.
+// Living index of FFG-native components — every real UI component under
+// src/components rendered live. Data/ and icons/ modules are excluded (they
+// export values, not components). Sibling of /shadcn-demo (the themed
+// @/components/ui primitives). Each entry renders the component with realistic
+// props, alongside its surface, source path, CSS class family, and status.
+// Route: /inventory.
 
-// FFG components
-import { Badge } from '../components/partner/atoms/Badge';
-import { KPI } from '../components/partner/atoms/KPI';
-import { TimelineStep } from '../components/partner/atoms/TimelineStep';
-import { PartnerCard } from '../components/partner/sections/PartnerCard';
-import { Pagination } from '../components/partner/sections/Pagination';
-import { ChartCard } from '../components/partner/charts/ChartCard';
+// ── Dashboard ────────────────────────────────────────────────────────────────
+import { Chip } from '../components/dashboard/atoms/Chip.app';
+import { FilterChip } from '../components/dashboard/atoms/FilterChip';
+import { OrgLogoPlaceholder } from '../components/dashboard/atoms/OrgLogoPlaceholder';
+import { RidgeDivider } from '../components/dashboard/atoms/RidgeDivider';
+import { Stat as StatApp } from '../components/dashboard/atoms/Stat.app';
+import { StatusPill } from '../components/dashboard/atoms/StatusPill';
+import { AllocModal } from '../components/dashboard/modals/AllocModal';
+import { AllocationTreemap } from '../components/dashboard/sections/AllocationTreemap';
+import { Hero } from '../components/dashboard/sections/Hero';
+import { ImpactAreasSection } from '../components/dashboard/sections/ImpactAreasSection';
+import { ImpactChart } from '../components/dashboard/sections/ImpactChart';
+import { ImpactOverview } from '../components/dashboard/sections/ImpactOverview';
+import { OverviewSelector } from '../components/dashboard/sections/OverviewSelector';
+import { PageTabs } from '../components/dashboard/sections/PageTabs';
+import { TransactionHistorySection } from '../components/dashboard/sections/TransactionHistorySection';
+import { UpdatesArea } from '../components/dashboard/sections/UpdatesArea';
+import { DynamicAction } from '../components/dashboard/sections/hero/DynamicAction';
+import { Stepper } from '../components/dashboard/sections/hero/Stepper';
+import { Welcome } from '../components/dashboard/sections/hero/Welcome';
+
+// ── Onboarding ───────────────────────────────────────────────────────────────
 import { ProgressBar } from '../components/onboarding/atoms/ProgressBar';
 import { FocusBubbles } from '../components/onboarding/atoms/FocusBubbles';
-import { StatusPill } from '../components/dashboard/atoms/StatusPill';
+import { StepChrome } from '../components/onboarding/atoms/StepChrome';
+import { CausePriorities } from '../components/onboarding/steps/CausePriorities';
+import { GoalsStep } from '../components/onboarding/steps/GoalsStep';
+import { Landing } from '../components/onboarding/steps/Landing';
+import { ReviewStep } from '../components/onboarding/steps/ReviewStep';
+import { ScaleStep } from '../components/onboarding/steps/ScaleStep';
+import { Submitted } from '../components/onboarding/steps/Submitted';
+
+// ── Partner ──────────────────────────────────────────────────────────────────
+import { Badge } from '../components/partner/atoms/Badge';
+import { KPI } from '../components/partner/atoms/KPI';
+import { KV } from '../components/partner/atoms/KV';
+import { LogoPlaceholder } from '../components/partner/atoms/LogoPlaceholder';
+import { Section } from '../components/partner/atoms/Section';
+import { Stat as StatPartner } from '../components/partner/atoms/Stat.partner';
+import { TimelineStep } from '../components/partner/atoms/TimelineStep';
+import { ChartCard } from '../components/partner/charts/ChartCard';
+import { ChartModal } from '../components/partner/charts/ChartModal';
+import { ChartSVG } from '../components/partner/charts/ChartSVG';
+import { DotChart } from '../components/partner/charts/DotChart';
+import { Accordion } from '../components/partner/modals/Accordion.partner';
+import { Directory } from '../components/partner/sections/Directory';
+import { Pagination } from '../components/partner/sections/Pagination';
+import { PartnerCard } from '../components/partner/sections/PartnerCard';
+import { PartnerDetail } from '../components/partner/sections/PartnerDetail';
+import { SortDropdown } from '../components/partner/sections/SortDropdown';
+
+// ── Shared ───────────────────────────────────────────────────────────────────
 import { CauseAllocationTreemap } from '../components/shared/CauseAllocationTreemap';
+import { Footer } from '../components/shared/Footer';
 import { UpdateCard } from '../components/shared/UpdateCard';
+import { UpdatesSection } from '../components/shared/UpdatesSection';
 
 // Sample data pulled from the same modules production uses — no new fixtures.
 import { PARTNERS } from '../components/partner/data/partners';
 import { statusForName } from '../components/partner/data/statusTaxonomy';
 import { CATEGORY_ICONS } from '../components/partner/data/categoryIcons';
+import { PARTNER_UPDATE_ITEMS } from '../components/partner/data/updateItems';
 import { CAUSE_AREAS } from '../components/onboarding/data/causeAreas';
 import { ALLOCATION_DATA } from '../components/dashboard/data/allocationData';
 import { UPDATE_ITEMS } from '../components/dashboard/data/updateItems';
+import { IMPACT_DATA_YEAR } from '../components/dashboard/data/impactData';
 
 // ── Derived variant sets ─────────────────────────────────────────────────────
 const CATEGORIES = Object.keys(CATEGORY_ICONS);
@@ -34,6 +83,7 @@ const CAUSE_IDS = CAUSE_AREAS.map((c) => c.id);
 const PARTNERS_BY_STATUS = ['Verified', 'Ongoing Review', 'Screening']
   .map((st) => PARTNERS.find((p) => statusForName(p.name) === st))
   .filter(Boolean);
+const SAMPLE_PARTNER = PARTNERS[0];
 
 const SURFACES = ['All', 'Dashboard', 'Onboarding', 'Partner', 'Shared'];
 
@@ -68,8 +118,106 @@ function Variants({ children, gap = 24, align = 'flex-end' }) {
   );
 }
 
-// One entry per FFG-native component. `render` mounts every variant.
+// Full-width well for components that need real horizontal room.
+function Wide({ children, height }) {
+  return <div style={{ width: '100%', ...(height ? { height } : null) }}>{children}</div>;
+}
+
+// Pagination is controlled — give each preview its own local state.
+function PaginationPreview({ initial, total }) {
+  const [page, setPage] = useState(initial);
+  return <Pagination page={page} totalPages={total} onChange={setPage} />;
+}
+
+// Controlled-state wrappers for components whose host owns the value.
+function FilterChipPreview() {
+  const [value, setValue] = useState('all');
+  return (
+    <FilterChip
+      value={value}
+      onChange={setValue}
+      ariaLabel="Filter"
+      options={[
+        { value: 'all', label: 'All orgs' },
+        { value: 'mine', label: 'My picks' },
+        { value: 'circle', label: 'My circle' },
+      ]}
+    />
+  );
+}
+
+function OverviewSelectorPreview() {
+  const [scope, setScope] = useState('you');
+  const [circles, setCircles] = useState([]);
+  return (
+    <OverviewSelector
+      scope={scope}
+      selectedCircles={circles}
+      onScopeChange={setScope}
+      onCirclesChange={setCircles}
+    />
+  );
+}
+
+function PageTabsPreview() {
+  const [value, setValue] = useState('overview');
+  return <PageTabs value={value} onChange={setValue} />;
+}
+
+function SortDropdownPreview() {
+  const [value, setValue] = useState('recommended');
+  return <SortDropdown value={value} onChange={setValue} />;
+}
+
+function CausePrioritiesPreview() {
+  const [order, setOrder] = useState(CAUSE_IDS);
+  return <CausePriorities order={order} setOrder={setOrder} />;
+}
+
+function GoalsStepPreview() {
+  const [selected, setSelected] = useState([]);
+  return <GoalsStep causeId="environment" selected={selected} setSelected={setSelected} />;
+}
+
+function ScaleStepPreview() {
+  const [scales, setScales] = useState([]);
+  const [locations, setLocations] = useState([]);
+  return (
+    <ScaleStep scales={scales} setScales={setScales} locations={locations} setLocations={setLocations} />
+  );
+}
+
+const noop = () => {};
+
+// Launches a fullscreen modal on demand — modals render an inline overlay, so
+// they can't sit inside a card well; gate them behind a button.
+function Launcher({ label, children }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        style={{
+          padding: '8px 16px',
+          borderRadius: 999,
+          fontSize: 13,
+          cursor: 'pointer',
+          border: '1px solid var(--border)',
+          background: 'var(--foreground)',
+          color: 'var(--background)',
+        }}
+      >
+        {label}
+      </button>
+      {open && children(() => setOpen(false))}
+    </>
+  );
+}
+
+// ── Registry ─────────────────────────────────────────────────────────────────
+// One entry per FFG-native component file. `render` mounts it live.
 const REGISTRY = [
+  // ── Dashboard ──────────────────────────────────────────────────────────────
   {
     name: 'StatusPill',
     surface: 'Dashboard',
@@ -98,20 +246,265 @@ const REGISTRY = [
     ),
   },
   {
-    name: 'CauseAllocationTreemap',
+    name: 'Chip',
     surface: 'Dashboard',
-    classFamily: '.pt-tm-rc / .pt-tm__*',
-    path: 'src/components/shared/CauseAllocationTreemap.jsx',
+    classFamily: '.chip',
+    path: 'src/components/dashboard/atoms/Chip.app.jsx',
     status: 'FFG-NATIVE',
-    note: 'Data-driven Recharts treemap with FFG cell styling; shared by Dashboard + Partner.',
+    note: 'Static caret chip — active and idle.',
     render: () => (
-      // .pt-tm-rc is flex:1 — it needs a flex-column parent with a fixed height
-      // to give the ResponsiveContainer a box to measure.
-      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: 240 }}>
-        <CauseAllocationTreemap data={ALLOCATION_DATA} />
-      </div>
+      <Variants gap={12} align="center">
+        <Variant label="active">
+          <Chip label="This year" active />
+        </Variant>
+        <Variant label="idle">
+          <Chip label="All time" />
+        </Variant>
+      </Variants>
     ),
   },
+  {
+    name: 'FilterChip',
+    surface: 'Dashboard',
+    classFamily: '.chip / .chip--select',
+    path: 'src/components/dashboard/atoms/FilterChip.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Controlled native-select chip (interactive).',
+    render: () => <FilterChipPreview />,
+  },
+  {
+    name: 'OrgLogoPlaceholder',
+    surface: 'Dashboard',
+    classFamily: 'SVG (var(--radius))',
+    path: 'src/components/dashboard/atoms/OrgLogoPlaceholder.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Deterministic palette from the org name.',
+    render: () => (
+      <Variants gap={16} align="center">
+        {['Jesse Tree', 'Boise Rescue', 'Idaho Foodbank', 'Wild Lands'].map((n) => (
+          <Variant key={n} label={n}>
+            <OrgLogoPlaceholder name={n} size={48} />
+          </Variant>
+        ))}
+      </Variants>
+    ),
+  },
+  {
+    name: 'RidgeDivider',
+    surface: 'Dashboard',
+    classFamily: '--ffg-surface-800/950',
+    path: 'src/components/dashboard/atoms/RidgeDivider.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Decorative ridge band — spans the full width.',
+    render: () => (
+      <Wide>
+        <RidgeDivider />
+      </Wide>
+    ),
+  },
+  {
+    name: 'Stat (app)',
+    surface: 'Dashboard',
+    classFamily: '.stat-card / .stat-value',
+    path: 'src/components/dashboard/atoms/Stat.app.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Count-up animates on mount; trend + info variants.',
+    render: () => (
+      <Variants gap={20} align="flex-start">
+        <StatApp label="Total donated" rawNum={200000} prefix="$" trend="+12%" />
+        <StatApp label="Lives impacted" rawNum={1284} trend="+8%" />
+        <StatApp label="Confidence" value="100%" />
+      </Variants>
+    ),
+  },
+  {
+    name: 'AllocModal',
+    surface: 'Dashboard',
+    classFamily: '.alloc-modal-overlay',
+    path: 'src/components/dashboard/modals/AllocModal.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Fullscreen overlay — launch to preview (Esc / close to dismiss).',
+    render: () => (
+      <Launcher label="Open AllocModal">{(close) => <AllocModal onClose={close} />}</Launcher>
+    ),
+  },
+  {
+    name: 'AllocationTreemap',
+    surface: 'Dashboard',
+    classFamily: '.pt-tm-grid',
+    path: 'src/components/dashboard/sections/AllocationTreemap.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Self-sourced treemap; needs a fixed-height parent.',
+    render: () => (
+      <Wide height={260}>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <AllocationTreemap />
+        </div>
+      </Wide>
+    ),
+  },
+  {
+    name: 'Hero',
+    surface: 'Dashboard',
+    classFamily: '.hero',
+    path: 'src/components/dashboard/sections/Hero.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Welcome + dynamic action composite (uses sonner toasts).',
+    render: () => (
+      <Wide>
+        <Hero name="Alex" livesCount={1284} welcomeState="generic" allocationCard onAmountConfirm={noop} />
+      </Wide>
+    ),
+  },
+  {
+    name: 'ImpactAreasSection',
+    surface: 'Dashboard',
+    classFamily: '.section-block / .org-row',
+    path: 'src/components/dashboard/sections/ImpactAreasSection.jsx',
+    status: 'FFG-NATIVE',
+    note: 'OrgRow uses useNavigate — served by the app router.',
+    render: () => (
+      <Wide>
+        <ImpactAreasSection />
+      </Wide>
+    ),
+  },
+  {
+    name: 'ImpactChart',
+    surface: 'Dashboard',
+    classFamily: '.chart-wrap',
+    path: 'src/components/dashboard/sections/ImpactChart.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Recharts dollars/outcomes/balance — yearly fixture.',
+    render: () => (
+      <Wide>
+        <ImpactChart data={IMPACT_DATA_YEAR} />
+      </Wide>
+    ),
+  },
+  {
+    name: 'ImpactOverview',
+    surface: 'Dashboard',
+    classFamily: '.impact',
+    path: 'src/components/dashboard/sections/ImpactOverview.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Heaviest composite — selector, stats, chart, treemap, modal.',
+    render: () => (
+      <Wide>
+        <ImpactOverview />
+      </Wide>
+    ),
+  },
+  {
+    name: 'OverviewSelector',
+    surface: 'Dashboard',
+    classFamily: '.overview-superselector__*',
+    path: 'src/components/dashboard/sections/OverviewSelector.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Scope + giving-circle selector (controlled, interactive).',
+    render: () => <OverviewSelectorPreview />,
+  },
+  {
+    name: 'PageTabs',
+    surface: 'Dashboard',
+    classFamily: '.page-tabs',
+    path: 'src/components/dashboard/sections/PageTabs.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Overview / areas / history (controlled).',
+    render: () => (
+      <Wide>
+        <PageTabsPreview />
+      </Wide>
+    ),
+  },
+  {
+    name: 'TransactionHistorySection',
+    surface: 'Dashboard',
+    classFamily: '.txn-* / .section-block',
+    path: 'src/components/dashboard/sections/TransactionHistorySection.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Sortable, paginated transaction table.',
+    render: () => (
+      <Wide>
+        <TransactionHistorySection phase="allocated" />
+      </Wide>
+    ),
+  },
+  {
+    name: 'UpdatesArea',
+    surface: 'Dashboard',
+    classFamily: '.updates-area',
+    path: 'src/components/dashboard/sections/UpdatesArea.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Status-update banner with embedded stepper (dismissible).',
+    render: () => (
+      <Wide>
+        <UpdatesArea
+          update={{
+            type: 'update-status',
+            title: 'Your transfer to Jesse Tree is on its way',
+            copy: 'Funds were released and are clearing now.',
+            steps: [
+              { label: 'Released', date: 'Jun 1', progress: 100, state: 'done' },
+              { label: 'Clearing', date: 'Jun 3', progress: 60, state: 'active' },
+              { label: 'Delivered', progress: 0, state: 'pending' },
+            ],
+          }}
+        />
+      </Wide>
+    ),
+  },
+  {
+    name: 'DynamicAction (hero)',
+    surface: 'Dashboard',
+    classFamily: '.alloc-card / .alloc-carousel',
+    path: 'src/components/dashboard/sections/hero/DynamicAction.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Allocation carousel; confirm fires a sonner toast.',
+    render: () => (
+      <Wide>
+        <DynamicAction enabled onAmountConfirm={noop} />
+      </Wide>
+    ),
+  },
+  {
+    name: 'Stepper (hero)',
+    surface: 'Dashboard',
+    classFamily: '.stepper',
+    path: 'src/components/dashboard/sections/hero/Stepper.jsx',
+    status: 'FFG-NATIVE',
+    note: 'done / active / pending states across the track.',
+    render: () => (
+      <Wide>
+        <Stepper
+          steps={[
+            { label: 'Funded', date: 'Jun 1', progress: 100, state: 'done' },
+            { label: 'Released', date: 'Jun 3', progress: 100, state: 'done' },
+            { label: 'Clearing', date: 'Jun 5', progress: 50, state: 'active' },
+            { label: 'Delivered', progress: 0, state: 'pending' },
+          ]}
+        />
+      </Wide>
+    ),
+  },
+  {
+    name: 'Welcome (hero)',
+    surface: 'Dashboard',
+    classFamily: '.hero-text / .accent-link',
+    path: 'src/components/dashboard/sections/hero/Welcome.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Greeting + accent links. "new good" state shows livesCount.',
+    render: () => (
+      <Wide>
+        <div style={{ display: 'grid', gap: 24 }}>
+          <Welcome name="Alex" livesCount={1284} state="new good" />
+          <Welcome name="Alex" state="generic" />
+        </div>
+      </Wide>
+    ),
+  },
+
+  // ── Onboarding ───────────────────────────────────────────────────────────────
   {
     name: 'ProgressBar',
     surface: 'Onboarding',
@@ -136,7 +529,7 @@ const REGISTRY = [
     classFamily: '.ob-bubbles',
     path: 'src/components/onboarding/atoms/FocusBubbles.jsx',
     status: 'FFG-NATIVE',
-    note: 'Packed-circle SVG, keyed by the top-3 cause ranking. Two rankings shown.',
+    note: 'Packed-circle SVG, keyed by the top-3 cause ranking.',
     render: () => (
       <Variants gap={32} align="flex-start">
         <Variant label={CAUSE_IDS.slice(0, 3).join(' · ')}>
@@ -148,6 +541,99 @@ const REGISTRY = [
       </Variants>
     ),
   },
+  {
+    name: 'StepChrome',
+    surface: 'Onboarding',
+    classFamily: '.ob-chrome / .ob-header',
+    path: 'src/components/onboarding/atoms/StepChrome.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Header chrome: back, progress, close.',
+    render: () => (
+      <Wide>
+        <StepChrome step={2} onBack={noop} onClose={noop} />
+      </Wide>
+    ),
+  },
+  {
+    name: 'CausePriorities',
+    surface: 'Onboarding',
+    classFamily: '.ob-causes / .ob-cause__row',
+    path: 'src/components/onboarding/steps/CausePriorities.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Drag-to-reorder cause ranking (controlled).',
+    render: () => (
+      <Wide>
+        <CausePrioritiesPreview />
+      </Wide>
+    ),
+  },
+  {
+    name: 'GoalsStep',
+    surface: 'Onboarding',
+    classFamily: '.ob-goals / .ob-goal',
+    path: 'src/components/onboarding/steps/GoalsStep.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Pick up to 3 goals for a cause (environment shown).',
+    render: () => (
+      <Wide>
+        <GoalsStepPreview />
+      </Wide>
+    ),
+  },
+  {
+    name: 'Landing',
+    surface: 'Onboarding',
+    classFamily: '.ob-landing',
+    path: 'src/components/onboarding/steps/Landing.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Onboarding intro screen.',
+    render: () => (
+      <Wide>
+        <Landing onStart={noop} />
+      </Wide>
+    ),
+  },
+  {
+    name: 'ReviewStep',
+    surface: 'Onboarding',
+    classFamily: '.ob-review',
+    path: 'src/components/onboarding/steps/ReviewStep.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Summary with FocusBubbles; fixed ~900px width.',
+    render: () => (
+      <Wide>
+        <ReviewStep order={CAUSE_IDS} locations={[]} onBack={noop} onSubmit={noop} />
+      </Wide>
+    ),
+  },
+  {
+    name: 'ScaleStep',
+    surface: 'Onboarding',
+    classFamily: '.ob-scales / .ob-loc-search',
+    path: 'src/components/onboarding/steps/ScaleStep.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Scale picker; location search appears once a scale is chosen.',
+    render: () => (
+      <Wide>
+        <ScaleStepPreview />
+      </Wide>
+    ),
+  },
+  {
+    name: 'Submitted',
+    surface: 'Onboarding',
+    classFamily: '.ob-done',
+    path: 'src/components/onboarding/steps/Submitted.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Final confirmation screen.',
+    render: () => (
+      <Wide>
+        <Submitted />
+      </Wide>
+    ),
+  },
+
+  // ── Partner ──────────────────────────────────────────────────────────────────
   {
     name: 'Badge',
     surface: 'Partner',
@@ -187,12 +673,72 @@ const REGISTRY = [
     ),
   },
   {
+    name: 'KV',
+    surface: 'Partner',
+    classFamily: '.pt-kv',
+    path: 'src/components/partner/atoms/KV.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Key/value row.',
+    render: () => (
+      <div style={{ display: 'grid', gap: 8, minWidth: 280 }}>
+        <KV k="EIN" v="82-1234567" />
+        <KV k="Founded" v="2009" />
+        <KV k="Location" v="Boise, ID" />
+      </div>
+    ),
+  },
+  {
+    name: 'LogoPlaceholder',
+    surface: 'Partner',
+    classFamily: '.pt-logo',
+    path: 'src/components/partner/atoms/LogoPlaceholder.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Initials + deterministic palette from the partner name.',
+    render: () => (
+      <Variants gap={16} align="center">
+        {PARTNERS.slice(0, 5).map((p) => (
+          <Variant key={p.name} label={p.name}>
+            <LogoPlaceholder name={p.name} size={56} />
+          </Variant>
+        ))}
+      </Variants>
+    ),
+  },
+  {
+    name: 'Section',
+    surface: 'Partner',
+    classFamily: '.pt-sec',
+    path: 'src/components/partner/atoms/Section.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Titled content block (fullWidth used here).',
+    render: () => (
+      <Wide>
+        <Section title="About this partner" body="A short description of the organization and its work." fullWidth>
+          <p style={{ margin: 0 }}>Body content goes here.</p>
+        </Section>
+      </Wide>
+    ),
+  },
+  {
+    name: 'Stat (partner)',
+    surface: 'Partner',
+    classFamily: '.pt-stat / .pt-info',
+    path: 'src/components/partner/atoms/Stat.partner.jsx',
+    status: 'FFG-NATIVE',
+    render: () => (
+      <Variants gap={24} align="flex-start">
+        <StatPartner label="Cost per outcome" value="$142" />
+        <StatPartner label="Outcomes / yr" value="3,400" />
+      </Variants>
+    ),
+  },
+  {
     name: 'TimelineStep',
     surface: 'Partner',
     classFamily: '.pt-tl-card (.pt-tl-cards)',
     path: 'src/components/partner/atoms/TimelineStep.jsx',
     status: 'FFG-NATIVE',
-    note: 'The full four-step intervention sequence, as composed in PartnerDetail.',
+    note: 'The full four-step intervention sequence.',
     render: () => (
       <div className="pt-tl-cards" style={{ maxWidth: 560 }}>
         <TimelineStep n="01" tag="Funding" time="1–2 weeks" />
@@ -203,22 +749,89 @@ const REGISTRY = [
     ),
   },
   {
-    name: 'PartnerCard',
+    name: 'ChartCard',
     surface: 'Partner',
-    classFamily: '.pt-card',
-    path: 'src/components/partner/sections/PartnerCard.jsx',
+    classFamily: '.pt-chart',
+    path: 'src/components/partner/charts/ChartCard.jsx',
     status: 'FFG-NATIVE',
-    note: 'One card per pipeline status — Verified (shield), Ongoing Review, Screening.',
+    note: 'Hand-built SVG chart with legend + expand modal (click to expand).',
     render: () => (
       <Variants gap={20} align="flex-start">
-        {PARTNERS_BY_STATUS.map((p) => (
-          <Variant key={p.name} label={statusForName(p.name)}>
-            <div style={{ width: 280 }}>
-              <PartnerCard partner={p} onOpen={() => {}} />
-            </div>
-          </Variant>
-        ))}
+        <div style={{ width: 420 }}>
+          <ChartCard title="Outcomes over time" />
+        </div>
+        <div style={{ width: 420 }}>
+          <ChartCard title="Cost efficiency" />
+        </div>
       </Variants>
+    ),
+  },
+  {
+    name: 'ChartModal',
+    surface: 'Partner',
+    classFamily: '.pt-modal',
+    path: 'src/components/partner/charts/ChartModal.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Fullscreen chart overlay — launch to preview.',
+    render: () => (
+      <Launcher label="Open ChartModal">
+        {(close) => <ChartModal title="Outcomes over time" onClose={close} />}
+      </Launcher>
+    ),
+  },
+  {
+    name: 'ChartSVG',
+    surface: 'Partner',
+    classFamily: '.pt-chart__svg',
+    path: 'src/components/partner/charts/ChartSVG.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Self-sourced intervention area chart.',
+    render: () => (
+      <Wide>
+        <ChartSVG height={160} />
+      </Wide>
+    ),
+  },
+  {
+    name: 'DotChart',
+    surface: 'Partner',
+    classFamily: '.pt-label-row / .pt-info',
+    path: 'src/components/partner/charts/DotChart.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Log-scaled people-reached dot field.',
+    render: () => (
+      <Wide>
+        <DotChart peopleReached={1284} depth={1.8} />
+      </Wide>
+    ),
+  },
+  {
+    name: 'Accordion',
+    surface: 'Partner',
+    classFamily: '.pt-acc',
+    path: 'src/components/partner/modals/Accordion.partner.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Click-toggle disclosure; default-open and variant shown.',
+    render: () => (
+      <div style={{ display: 'grid', gap: 12, width: '100%', maxWidth: 560 }}>
+        <Accordion title="How funds are used" defaultOpen>
+          <p style={{ margin: 0 }}>Every dollar is tracked to a verified outcome.</p>
+        </Accordion>
+        <Accordion title="Methodology" variant="muted" />
+      </div>
+    ),
+  },
+  {
+    name: 'Directory',
+    surface: 'Partner',
+    classFamily: '.pt-dir / .pt-grid',
+    path: 'src/components/partner/sections/Directory.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Full partner directory — toolbar, grid, pagination.',
+    render: () => (
+      <Wide>
+        <Directory onOpen={noop} />
+      </Wide>
     ),
   },
   {
@@ -243,21 +856,72 @@ const REGISTRY = [
     ),
   },
   {
-    name: 'ChartCard',
+    name: 'PartnerCard',
     surface: 'Partner',
-    classFamily: '.pt-chart',
-    path: 'src/components/partner/charts/ChartCard.jsx',
+    classFamily: '.pt-card',
+    path: 'src/components/partner/sections/PartnerCard.jsx',
     status: 'FFG-NATIVE',
-    note: 'Hand-built SVG area/balance chart with legend + expand modal (click to expand).',
+    note: 'One card per pipeline status — Verified, Ongoing Review, Screening.',
     render: () => (
       <Variants gap={20} align="flex-start">
-        <div style={{ width: 420 }}>
-          <ChartCard title="Outcomes over time" />
-        </div>
-        <div style={{ width: 420 }}>
-          <ChartCard title="Cost efficiency" />
-        </div>
+        {PARTNERS_BY_STATUS.map((p) => (
+          <Variant key={p.name} label={statusForName(p.name)}>
+            <div style={{ width: 280 }}>
+              <PartnerCard partner={p} onOpen={() => {}} />
+            </div>
+          </Variant>
+        ))}
       </Variants>
+    ),
+  },
+  {
+    name: 'PartnerDetail',
+    surface: 'Partner',
+    classFamily: '.pt-detail / .pt-hero',
+    path: 'src/components/partner/sections/PartnerDetail.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Full partner profile — deep composite (treemap, charts, updates).',
+    render: () => (
+      <Wide>
+        <PartnerDetail partner={SAMPLE_PARTNER} onBack={noop} />
+      </Wide>
+    ),
+  },
+  {
+    name: 'SortDropdown',
+    surface: 'Partner',
+    classFamily: '.pt-sort-native',
+    path: 'src/components/partner/sections/SortDropdown.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Native sort select (controlled).',
+    render: () => <SortDropdownPreview />,
+  },
+
+  // ── Shared ───────────────────────────────────────────────────────────────────
+  {
+    name: 'CauseAllocationTreemap',
+    surface: 'Shared',
+    classFamily: '.pt-tm-rc / .pt-tm__*',
+    path: 'src/components/shared/CauseAllocationTreemap.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Recharts treemap shared by Dashboard + Partner; needs a height.',
+    render: () => (
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: 240 }}>
+        <CauseAllocationTreemap data={ALLOCATION_DATA} />
+      </div>
+    ),
+  },
+  {
+    name: 'Footer',
+    surface: 'Shared',
+    classFamily: '.app-footer',
+    path: 'src/components/shared/Footer.jsx',
+    status: 'FFG-NATIVE',
+    note: 'App footer with inline-SVG wordmark.',
+    render: () => (
+      <Wide>
+        <Footer />
+      </Wide>
     ),
   },
   {
@@ -266,7 +930,7 @@ const REGISTRY = [
     classFamily: '.update-card',
     path: 'src/components/shared/UpdateCard.jsx',
     status: 'FFG-NATIVE',
-    note: 'Image variants (every sample item) plus the striped placeholder (no img).',
+    note: 'Image variants (every sample item) plus the striped placeholder.',
     render: () => (
       <Variants gap={20} align="flex-start">
         {UPDATE_ITEMS.map((item) => (
@@ -294,13 +958,20 @@ const REGISTRY = [
       </Variants>
     ),
   },
+  {
+    name: 'UpdatesSection',
+    surface: 'Shared',
+    classFamily: '.updates-section / .updates-grid',
+    path: 'src/components/shared/UpdatesSection.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Grid of UpdateCards with a heading and see-more.',
+    render: () => (
+      <Wide>
+        <UpdatesSection items={PARTNER_UPDATE_ITEMS} title="Recent updates" />
+      </Wide>
+    ),
+  },
 ];
-
-// Pagination is controlled — give each preview its own local state.
-function PaginationPreview({ initial, total }) {
-  const [page, setPage] = useState(initial);
-  return <Pagination page={page} totalPages={total} onChange={setPage} />;
-}
 
 const SURFACE_COLORS = {
   Dashboard: '#15315A',
@@ -328,13 +999,16 @@ export default function Inventory() {
       data-theme="light"
       style={{ minHeight: '100vh', padding: '48px', background: 'var(--background)', color: 'var(--foreground)' }}
     >
+      {/* Mounted once so DynamicAction / Hero toasts have a target. */}
+      <Toaster position="bottom-right" />
       <div style={{ maxWidth: 980, margin: '0 auto', display: 'grid', gap: 32 }}>
         <header style={{ display: 'grid', gap: 6 }}>
           <h1 style={{ fontFamily: 'var(--font-serif, serif)', fontWeight: 300, fontSize: 32, margin: 0 }}>
             FFG · component inventory
           </h1>
           <p style={{ color: 'var(--muted-foreground)', margin: 0 }}>
-            FFG-native components (no shadcn equivalent), every variant. Themed shadcn primitives live at{' '}
+            Every FFG-native component under <code>src/components</code>, rendered live.{' '}
+            <code>data/</code> and <code>icons/</code> modules are omitted. Themed shadcn primitives live at{' '}
             <code>/shadcn-demo</code>.
           </p>
         </header>
@@ -342,6 +1016,7 @@ export default function Inventory() {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
           {SURFACES.map((s) => {
             const active = filter === s;
+            const count = s === 'All' ? REGISTRY.length : REGISTRY.filter((c) => c.surface === s).length;
             return (
               <button
                 key={s}
@@ -356,7 +1031,7 @@ export default function Inventory() {
                   color: active ? 'var(--background)' : 'var(--foreground)',
                 }}
               >
-                {s}
+                {s} <span style={{ opacity: 0.6 }}>{count}</span>
               </button>
             );
           })}
