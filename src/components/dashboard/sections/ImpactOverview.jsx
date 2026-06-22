@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { IMPACT_DATA_BY_PERIOD } from '../data/impactData';
 import { IMPACT_AREAS } from '../data/orgTaxonomy';
-import { FilterChip } from '../atoms/FilterChip';
+import { FilterChip } from '../../shared/FilterChip';
 import { Stat } from '../atoms/Stat.app';
 import { ImpactChart } from './ImpactChart';
 import { AllocationTreemap } from './AllocationTreemap';

@@ -3431,9 +3431,8 @@ img {
   border: 1px solid var(--overlay-dark-50);
   border-radius: var(--radius-sm);
   background: transparent;
-  font-family: "PP Fragment Sans", sans-serif;
-  font-size: 14px;
-  font-weight: 300;
+  font-size: 12px;
+  font-weight: 500;
   letter-spacing: 0.005em;
   color: var(--ffg-surface-950);
   cursor: pointer;
@@ -3450,10 +3449,10 @@ img {
   appearance: none;
   border: 0;
   background: transparent;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 400;
+  font: inherit;
+  font-weight: 500;
   color: inherit;
+  letter-spacing: inherit;
   cursor: pointer;
   outline: none;
   padding: 0;

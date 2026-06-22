@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Toaster } from 'sonner';
+import { ShieldCheck } from 'lucide-react';
 
 // Living index of FFG-native components — every real UI component under
 // src/components rendered live. Data/ and icons/ modules are excluded (they
@@ -9,7 +10,7 @@ import { Toaster } from 'sonner';
 // Route: /inventory.
 
 // ── Dashboard ────────────────────────────────────────────────────────────────
-import { FilterChip } from '../components/dashboard/atoms/FilterChip';
+import { FilterChip } from '../components/shared/FilterChip';
 import { OrgLogoPlaceholder } from '../components/dashboard/atoms/OrgLogoPlaceholder';
 import { RidgeDivider } from '../components/dashboard/atoms/RidgeDivider';
 import { Stat as StatApp } from '../components/dashboard/atoms/Stat.app';
@@ -39,22 +40,20 @@ import { ScaleStep } from '../components/onboarding/steps/ScaleStep';
 import { Submitted } from '../components/onboarding/steps/Submitted';
 
 // ── Partner ──────────────────────────────────────────────────────────────────
-import { Badge } from '../components/partner/atoms/Badge';
+import { Badge } from '../components/shared/Badge';
 import { KPI } from '../components/partner/atoms/KPI';
-import { KV } from '../components/partner/atoms/KV';
 import { LogoPlaceholder } from '../components/partner/atoms/LogoPlaceholder';
 import { Section } from '../components/partner/atoms/Section';
 import { Stat as StatPartner } from '../components/partner/atoms/Stat.partner';
 import { TimelineStep } from '../components/partner/atoms/TimelineStep';
-import { ChartModal } from '../components/partner/charts/ChartModal';
-import { ChartSVG } from '../components/partner/charts/ChartSVG';
+import { ReviewStatusBadge, BADGE_TEXT } from '../components/partner/atoms/ReviewStatusBadge';
 import { DotChart } from '../components/partner/charts/DotChart';
 import { Accordion } from '../components/partner/modals/Accordion.partner';
 import { Directory } from '../components/partner/sections/Directory';
 import { Pagination } from '../components/partner/sections/Pagination';
 import { PartnerCard } from '../components/partner/sections/PartnerCard';
 import { PartnerDetail } from '../components/partner/sections/PartnerDetail';
-import { SortDropdown } from '../components/partner/sections/SortDropdown';
+import { SortDropdown } from '../components/shared/SortDropdown';
 
 // ── Shared ───────────────────────────────────────────────────────────────────
 import { CauseAllocationTreemap } from '../components/shared/CauseAllocationTreemap';
@@ -67,7 +66,7 @@ import { TopNavUnauth } from '../topnav-unauth.jsx';
 // Sample data pulled from the same modules production uses — no new fixtures.
 import { PARTNERS } from '../components/partner/data/partners';
 import { statusForName } from '../components/partner/data/statusTaxonomy';
-import { CATEGORY_ICONS } from '../components/partner/data/categoryIcons';
+import { CATEGORY_ICONS } from '../components/shared/data/categoryIcons';
 import { PARTNER_UPDATE_ITEMS } from '../components/partner/data/updateItems';
 import { CAUSE_AREAS } from '../components/onboarding/data/causeAreas';
 import { ALLOCATION_DATA } from '../components/dashboard/data/allocationData';
@@ -188,31 +187,6 @@ function ScaleStepPreview() {
 
 const noop = () => {};
 
-// Launches a fullscreen modal on demand — modals render an inline overlay, so
-// they can't sit inside a card well; gate them behind a button.
-function Launcher({ label, children }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <>
-      <button
-        onClick={() => setOpen(true)}
-        style={{
-          padding: '8px 16px',
-          borderRadius: 999,
-          fontSize: 13,
-          cursor: 'pointer',
-          border: '1px solid var(--border)',
-          background: 'var(--foreground)',
-          color: 'var(--background)',
-        }}
-      >
-        {label}
-      </button>
-      {open && children(() => setOpen(false))}
-    </>
-  );
-}
-
 // ── Registry ─────────────────────────────────────────────────────────────────
 // One entry per FFG-native component file. `render` mounts it live.
 const REGISTRY = [
@@ -236,9 +210,9 @@ const REGISTRY = [
   },
   {
     name: 'FilterChip',
-    surface: 'Dashboard',
+    surface: 'Shared',
     classFamily: '.chip / .chip--select',
-    path: 'src/components/dashboard/atoms/FilterChip.jsx',
+    path: 'src/components/shared/FilterChip.jsx',
     status: 'FFG-NATIVE',
     note: 'Controlled native-select chip (interactive).',
     render: () => <FilterChipPreview />,
@@ -279,13 +253,15 @@ const REGISTRY = [
     classFamily: '.stat-card / .stat-value',
     path: 'src/components/dashboard/atoms/Stat.app.jsx',
     status: 'FFG-NATIVE',
-    note: 'Count-up animates on mount; trend + info variants.',
+    note: 'Count-up animates on mount; trend + info variants. The card frame comes from the .stats-row parent (styles.css), so it is wrapped here to render faithfully.',
     render: () => (
-      <Variants gap={20} align="flex-start">
-        <StatApp label="Total donated" rawNum={200000} prefix="$" trend="+12%" />
-        <StatApp label="Lives impacted" rawNum={1284} trend="+8%" />
-        <StatApp label="Confidence" value="100%" />
-      </Variants>
+      <Wide>
+        <div className="stats-row" style={{ marginBottom: 0 }}>
+          <StatApp label="Total donated" rawNum={200000} prefix="$" trend="+12%" />
+          <StatApp label="Lives impacted" rawNum={1284} trend="+8%" />
+          <StatApp label="Confidence" value="100%" />
+        </div>
+      </Wide>
     ),
   },
   {
@@ -295,6 +271,7 @@ const REGISTRY = [
     path: 'src/components/dashboard/sections/AllocationTreemap.jsx',
     status: 'FFG-NATIVE',
     note: 'Self-sourced treemap; needs a fixed-height parent.',
+    nested: ['CauseAllocationTreemap'],
     render: () => (
       <Wide height={260}>
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -310,6 +287,7 @@ const REGISTRY = [
     path: 'src/components/dashboard/sections/Hero.jsx',
     status: 'FFG-NATIVE',
     note: 'Welcome + dynamic action composite (uses sonner toasts).',
+    nested: ['Welcome (hero)', 'DynamicAction (hero)'],
     render: () => (
       <Wide>
         <Hero name="Alex" livesCount={1284} welcomeState="generic" allocationCard onAmountConfirm={noop} />
@@ -323,6 +301,7 @@ const REGISTRY = [
     path: 'src/components/dashboard/sections/ImpactAreasSection.jsx',
     status: 'FFG-NATIVE',
     note: 'OrgRow uses useNavigate — served by the app router.',
+    nested: ['OrgLogoPlaceholder', 'OrgRow (not in registry)'],
     render: () => (
       <Wide>
         <ImpactAreasSection />
@@ -349,6 +328,7 @@ const REGISTRY = [
     path: 'src/components/dashboard/sections/ImpactOverview.jsx',
     status: 'FFG-NATIVE',
     note: 'Heaviest composite — selector, stats, chart, treemap, modal.',
+    nested: ['OverviewSelector', 'FilterChip', 'Stat (app)', 'ImpactChart', 'AllocationTreemap'],
     render: () => (
       <Wide>
         <ImpactOverview />
@@ -384,6 +364,7 @@ const REGISTRY = [
     path: 'src/components/dashboard/sections/TransactionHistorySection.jsx',
     status: 'FFG-NATIVE',
     note: 'Sortable, paginated transaction table.',
+    nested: ['StatusPill'],
     render: () => (
       <Wide>
         <TransactionHistorySection phase="allocated" />
@@ -396,22 +377,53 @@ const REGISTRY = [
     classFamily: '.updates-area',
     path: 'src/components/dashboard/sections/UpdatesArea.jsx',
     status: 'FFG-NATIVE',
-    note: 'Status-update banner with embedded stepper (dismissible).',
+    note: 'Single-update banner — four types; each dismissible via the ✕.',
+    nested: ['Stepper (hero)'],
     render: () => (
-      <Wide>
-        <UpdatesArea
-          update={{
-            type: 'update-status',
-            title: 'Your transfer to Jesse Tree is on its way',
-            copy: 'Funds were released and are clearing now.',
-            steps: [
-              { label: 'Released', date: 'Jun 1', progress: 100, state: 'done' },
-              { label: 'Clearing', date: 'Jun 3', progress: 60, state: 'active' },
-              { label: 'Delivered', progress: 0, state: 'pending' },
-            ],
-          }}
-        />
-      </Wide>
+      <div style={{ display: 'grid', gap: 20, width: '100%' }}>
+        <Variant label="type: update-status" grow>
+          <UpdatesArea
+            update={{
+              type: 'update-status',
+              title: 'Your transfer to Jesse Tree is on its way',
+              copy: 'Funds were released and are clearing now.',
+              steps: [
+                { label: 'Released', date: 'Jun 1', progress: 100, state: 'done' },
+                { label: 'Clearing', date: 'Jun 3', progress: 60, state: 'active' },
+                { label: 'Delivered', progress: 0, state: 'pending' },
+              ],
+            }}
+          />
+        </Variant>
+        <Variant label="type: update-action" grow>
+          <UpdatesArea
+            update={{
+              type: 'update-action',
+              title: 'Confirm your June allocation',
+              copy: 'Your monthly gift is ready to send to your chosen partners.',
+              action: { label: 'Review & confirm', onClick: noop },
+            }}
+          />
+        </Variant>
+        <Variant label="type: update-advisory" grow>
+          <UpdatesArea
+            update={{
+              type: 'update-advisory',
+              title: 'A partner is completing verification',
+              copy: 'Jesse Tree is finishing review — allocations resume once verified.',
+            }}
+          />
+        </Variant>
+        <Variant label="type: update-general" grow>
+          <UpdatesArea
+            update={{
+              type: 'update-general',
+              title: 'New impact report available',
+              copy: 'See where your giving went over the last quarter.',
+            }}
+          />
+        </Variant>
+      </div>
     ),
   },
   {
@@ -453,12 +465,16 @@ const REGISTRY = [
     classFamily: '.hero-text / .accent-link',
     path: 'src/components/dashboard/sections/hero/Welcome.jsx',
     status: 'FFG-NATIVE',
-    note: 'Greeting + accent links. "new good" state shows livesCount.',
+    note: 'Greeting + accent links. "new good" state shows livesCount. The serif (Glare) heading comes from the .hero parent (styles.css), so each state is wrapped in .hero to render faithfully.',
     render: () => (
       <Wide>
         <div style={{ display: 'grid', gap: 24 }}>
-          <Welcome name="Alex" livesCount={1284} state="new good" />
-          <Welcome name="Alex" state="generic" />
+          <div className="hero" style={{ paddingBottom: 0 }}>
+            <Welcome name="Alex" livesCount={1284} state="new good" />
+          </div>
+          <div className="hero" style={{ paddingBottom: 0 }}>
+            <Welcome name="Alex" state="generic" />
+          </div>
         </div>
       </Wide>
     ),
@@ -508,6 +524,7 @@ const REGISTRY = [
     path: 'src/components/onboarding/atoms/StepChrome.jsx',
     status: 'FFG-NATIVE',
     note: 'Header chrome: back, progress, close.',
+    nested: ['ProgressBar'],
     render: () => (
       <Wide>
         <StepChrome step={2} onBack={noop} onClose={noop} />
@@ -560,6 +577,7 @@ const REGISTRY = [
     path: 'src/components/onboarding/steps/ReviewStep.jsx',
     status: 'FFG-NATIVE',
     note: 'Summary with FocusBubbles; fixed ~900px width.',
+    nested: ['FocusBubbles'],
     render: () => (
       <Wide>
         <ReviewStep order={CAUSE_IDS} locations={[]} onBack={noop} onSubmit={noop} />
@@ -596,11 +614,11 @@ const REGISTRY = [
   // ── Partner ──────────────────────────────────────────────────────────────────
   {
     name: 'Badge',
-    surface: 'Partner',
+    surface: 'Shared',
     classFamily: '.pt-badge / .impact-badge',
-    path: 'src/components/partner/atoms/Badge.jsx',
+    path: 'src/components/shared/Badge.jsx',
     status: 'FFG-NATIVE',
-    note: 'Icon variant per cause category, plus the solid variant.',
+    note: 'Two paths only: impact-badge (icon, per category) and the plain pt-badge / pt-badge--solid pill. Any other text routes to pt-badge — the label varies, the variant does not.',
     render: () => (
       <div style={{ display: 'grid', gap: 20, width: '100%' }}>
         <Variants gap={10} align="center">
@@ -608,14 +626,37 @@ const REGISTRY = [
             <Badge key={cat}>{cat}</Badge>
           ))}
         </Variants>
-        <Variants gap={10} align="center">
-          {['Verified', 'Tier 4', 'Featured'].map((label) => (
-            <Variant key={label} label="solid">
-              <Badge solid>{label}</Badge>
-            </Variant>
-          ))}
+        <Variants gap={16} align="center">
+          <Variant label="pt-badge">
+            <Badge>Featured</Badge>
+          </Variant>
+          <Variant label="pt-badge--solid">
+            <Badge solid>Featured</Badge>
+          </Variant>
         </Variants>
       </div>
+    ),
+  },
+  {
+    name: 'ReviewStatusBadge',
+    surface: 'Partner',
+    classFamily: '.impact-badge / .impact-badge--verified',
+    path: 'src/components/partner/atoms/ReviewStatusBadge.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Vetting-pipeline pill — one icon per status. The "backed by" pill (last) is a sibling inline span in PartnerDetail that shares BADGE_TEXT, not part of this component.',
+    render: () => (
+      <Variants gap={12} align="center">
+        {['Verified', 'Ongoing Review', 'Screening'].map((status) => (
+          <Variant key={status} label={status}>
+            <ReviewStatusBadge status={status} />
+          </Variant>
+        ))}
+        <Variant label="Backed by (inline)">
+          <span className="impact-badge">
+            <ShieldCheck size={14} color="var(--ffg-muted)" /> <span style={BADGE_TEXT}>Backed by 112 Builders</span>
+          </span>
+        </Variant>
+      </Variants>
     ),
   },
   {
@@ -630,21 +671,6 @@ const REGISTRY = [
         <KPI label="Families served" value="1,284" />
         <KPI label="Confidence level" value="100%" />
       </Variants>
-    ),
-  },
-  {
-    name: 'KV',
-    surface: 'Partner',
-    classFamily: '.pt-kv',
-    path: 'src/components/partner/atoms/KV.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Key/value row.',
-    render: () => (
-      <div style={{ display: 'grid', gap: 8, minWidth: 280 }}>
-        <KV k="EIN" v="82-1234567" />
-        <KV k="Founded" v="2009" />
-        <KV k="Location" v="Boise, ID" />
-      </div>
     ),
   },
   {
@@ -709,32 +735,6 @@ const REGISTRY = [
     ),
   },
   {
-    name: 'ChartModal',
-    surface: 'Partner',
-    classFamily: '.pt-modal',
-    path: 'src/components/partner/charts/ChartModal.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Fullscreen chart overlay — launch to preview.',
-    render: () => (
-      <Launcher label="Open ChartModal">
-        {(close) => <ChartModal title="Outcomes over time" onClose={close} />}
-      </Launcher>
-    ),
-  },
-  {
-    name: 'ChartSVG',
-    surface: 'Partner',
-    classFamily: '.pt-chart__svg',
-    path: 'src/components/partner/charts/ChartSVG.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Self-sourced intervention area chart.',
-    render: () => (
-      <Wide>
-        <ChartSVG height={160} />
-      </Wide>
-    ),
-  },
-  {
     name: 'DotChart',
     surface: 'Partner',
     classFamily: '.pt-label-row / .pt-info',
@@ -770,6 +770,7 @@ const REGISTRY = [
     path: 'src/components/partner/sections/Directory.jsx',
     status: 'FFG-NATIVE',
     note: 'Full partner directory — toolbar, grid, pagination.',
+    nested: ['SortDropdown', 'PartnerCard', 'Pagination'],
     render: () => (
       <Wide>
         <Directory onOpen={noop} />
@@ -804,6 +805,7 @@ const REGISTRY = [
     path: 'src/components/partner/sections/PartnerCard.jsx',
     status: 'FFG-NATIVE',
     note: 'One card per pipeline status — Verified, Ongoing Review, Screening.',
+    nested: ['LogoPlaceholder', 'Badge'],
     render: () => (
       <Variants gap={20} align="flex-start">
         {PARTNERS_BY_STATUS.map((p) => (
@@ -823,6 +825,7 @@ const REGISTRY = [
     path: 'src/components/partner/sections/PartnerDetail.jsx',
     status: 'FFG-NATIVE',
     note: 'Full partner profile — deep composite (treemap, charts, updates).',
+    nested: ['LogoPlaceholder', 'Badge', 'ReviewStatusBadge', 'KPI', 'Stat (partner)', 'Section', 'TimelineStep', 'DotChart', 'CauseAllocationTreemap', 'Accordion', 'UpdatesSection'],
     render: () => (
       <Wide>
         <PartnerDetail partner={SAMPLE_PARTNER} onBack={noop} />
@@ -831,9 +834,9 @@ const REGISTRY = [
   },
   {
     name: 'SortDropdown',
-    surface: 'Partner',
+    surface: 'Shared',
     classFamily: '.pt-sort-native',
-    path: 'src/components/partner/sections/SortDropdown.jsx',
+    path: 'src/components/shared/SortDropdown.jsx',
     status: 'FFG-NATIVE',
     note: 'Native sort select (controlled).',
     render: () => <SortDropdownPreview />,
@@ -907,6 +910,7 @@ const REGISTRY = [
     path: 'src/components/shared/UpdatesSection.jsx',
     status: 'FFG-NATIVE',
     note: 'Grid of UpdateCards with a heading and see-more.',
+    nested: ['UpdateCard'],
     render: () => (
       <Wide>
         <UpdatesSection items={PARTNER_UPDATE_ITEMS} title="Recent updates" />
@@ -1078,6 +1082,29 @@ export default function Inventory() {
                   >
                     {c.status}
                   </span>
+                </MetaRow>
+                <MetaRow label="Nests">
+                  {c.nested && c.nested.length ? (
+                    <span style={{ display: 'inline-flex', flexWrap: 'wrap', gap: 6 }}>
+                      {c.nested.map((n) => (
+                        <span
+                          key={n}
+                          style={{
+                            fontSize: 11,
+                            padding: '2px 8px',
+                            borderRadius: 999,
+                            border: '1px solid var(--border)',
+                            background: 'var(--muted, #f1efe9)',
+                            color: 'var(--foreground)',
+                          }}
+                        >
+                          {n}
+                        </span>
+                      ))}
+                    </span>
+                  ) : (
+                    <span style={{ color: 'var(--muted-foreground)' }}>—</span>
+                  )}
                 </MetaRow>
                 {c.note && <MetaRow label="Note">{c.note}</MetaRow>}
               </div>

@@ -1,4 +1,4 @@
-import { Icon } from '../icons/Icon';
+import { Icon } from '../dashboard/icons/Icon';
 
 function FilterChip({ value, onChange, options, ariaLabel }) {
   return (

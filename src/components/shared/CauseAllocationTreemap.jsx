@@ -1,5 +1,5 @@
 import { Treemap, ResponsiveContainer } from 'recharts';
-import { CATEGORY_ICONS } from '../partner/data/categoryIcons';
+import { CATEGORY_ICONS } from './data/categoryIcons';
 
 /* ====== Canonical cause-allocation treemap ====== */
 // Single source of truth shared by the partner page and the dashboard.

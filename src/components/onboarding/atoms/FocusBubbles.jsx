@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { CAUSE_BY_ID, CAUSE_AREAS } from '../data/causeAreas';
-import { CATEGORY_ICONS } from '../../partner/data/categoryIcons';
+import { CATEGORY_ICONS } from '../../shared/data/categoryIcons';
 
 /* ── Step 6: review profile ──────────────────────────── */
 function FocusBubbles({ top3 }) {
