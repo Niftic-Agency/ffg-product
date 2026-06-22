@@ -9,13 +9,11 @@ import { Toaster } from 'sonner';
 // Route: /inventory.
 
 // ── Dashboard ────────────────────────────────────────────────────────────────
-import { Chip } from '../components/dashboard/atoms/Chip.app';
 import { FilterChip } from '../components/dashboard/atoms/FilterChip';
 import { OrgLogoPlaceholder } from '../components/dashboard/atoms/OrgLogoPlaceholder';
 import { RidgeDivider } from '../components/dashboard/atoms/RidgeDivider';
 import { Stat as StatApp } from '../components/dashboard/atoms/Stat.app';
 import { StatusPill } from '../components/dashboard/atoms/StatusPill';
-import { AllocModal } from '../components/dashboard/modals/AllocModal';
 import { AllocationTreemap } from '../components/dashboard/sections/AllocationTreemap';
 import { Hero } from '../components/dashboard/sections/Hero';
 import { ImpactAreasSection } from '../components/dashboard/sections/ImpactAreasSection';
@@ -48,7 +46,6 @@ import { LogoPlaceholder } from '../components/partner/atoms/LogoPlaceholder';
 import { Section } from '../components/partner/atoms/Section';
 import { Stat as StatPartner } from '../components/partner/atoms/Stat.partner';
 import { TimelineStep } from '../components/partner/atoms/TimelineStep';
-import { ChartCard } from '../components/partner/charts/ChartCard';
 import { ChartModal } from '../components/partner/charts/ChartModal';
 import { ChartSVG } from '../components/partner/charts/ChartSVG';
 import { DotChart } from '../components/partner/charts/DotChart';
@@ -64,6 +61,8 @@ import { CauseAllocationTreemap } from '../components/shared/CauseAllocationTree
 import { Footer } from '../components/shared/Footer';
 import { UpdateCard } from '../components/shared/UpdateCard';
 import { UpdatesSection } from '../components/shared/UpdatesSection';
+import { TopNav } from '../topnav-auth.jsx';
+import { TopNavUnauth } from '../topnav-unauth.jsx';
 
 // Sample data pulled from the same modules production uses — no new fixtures.
 import { PARTNERS } from '../components/partner/data/partners';
@@ -226,40 +225,12 @@ const REGISTRY = [
     status: 'FFG-NATIVE',
     note: 'Design contract — do not alter without a design decision.',
     render: () => (
-      <div style={{ display: 'grid', gap: 20, width: '100%' }}>
-        <Variants gap={10} align="center">
-          {STATUS_PILL_VARIANTS.map((v) => (
-            <Variant key={v} label={v}>
-              <StatusPill variant={v} label={v[0].toUpperCase() + v.slice(1)} />
-            </Variant>
-          ))}
-        </Variants>
-        <Variants gap={10} align="center">
-          <Variant label="size=sm">
-            <StatusPill variant="active" label="Small" size="sm" />
+      <Variants gap={10} align="center">
+        {STATUS_PILL_VARIANTS.map((v) => (
+          <Variant key={v} label={v}>
+            <StatusPill variant={v} label={v[0].toUpperCase() + v.slice(1)} />
           </Variant>
-          <Variant label="size=md">
-            <StatusPill variant="active" label="Medium" size="md" />
-          </Variant>
-        </Variants>
-      </div>
-    ),
-  },
-  {
-    name: 'Chip',
-    surface: 'Dashboard',
-    classFamily: '.chip',
-    path: 'src/components/dashboard/atoms/Chip.app.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Static caret chip — active and idle.',
-    render: () => (
-      <Variants gap={12} align="center">
-        <Variant label="active">
-          <Chip label="This year" active />
-        </Variant>
-        <Variant label="idle">
-          <Chip label="All time" />
-        </Variant>
+        ))}
       </Variants>
     ),
   },
@@ -315,17 +286,6 @@ const REGISTRY = [
         <StatApp label="Lives impacted" rawNum={1284} trend="+8%" />
         <StatApp label="Confidence" value="100%" />
       </Variants>
-    ),
-  },
-  {
-    name: 'AllocModal',
-    surface: 'Dashboard',
-    classFamily: '.alloc-modal-overlay',
-    path: 'src/components/dashboard/modals/AllocModal.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Fullscreen overlay — launch to preview (Esc / close to dismiss).',
-    render: () => (
-      <Launcher label="Open AllocModal">{(close) => <AllocModal onClose={close} />}</Launcher>
     ),
   },
   {
@@ -749,24 +709,6 @@ const REGISTRY = [
     ),
   },
   {
-    name: 'ChartCard',
-    surface: 'Partner',
-    classFamily: '.pt-chart',
-    path: 'src/components/partner/charts/ChartCard.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Hand-built SVG chart with legend + expand modal (click to expand).',
-    render: () => (
-      <Variants gap={20} align="flex-start">
-        <div style={{ width: 420 }}>
-          <ChartCard title="Outcomes over time" />
-        </div>
-        <div style={{ width: 420 }}>
-          <ChartCard title="Cost efficiency" />
-        </div>
-      </Variants>
-    ),
-  },
-  {
     name: 'ChartModal',
     surface: 'Partner',
     classFamily: '.pt-modal',
@@ -968,6 +910,32 @@ const REGISTRY = [
     render: () => (
       <Wide>
         <UpdatesSection items={PARTNER_UPDATE_ITEMS} title="Recent updates" />
+      </Wide>
+    ),
+  },
+  {
+    name: 'TopNav',
+    surface: 'Shared',
+    classFamily: '.nav / .nav-links / .nav-dropdown',
+    path: 'src/topnav-auth.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Authenticated top nav: wordmark, primary links, notifications, avatar menu. Mounted by AuthLayout.',
+    render: () => (
+      <Wide>
+        <TopNav padded={false} />
+      </Wide>
+    ),
+  },
+  {
+    name: 'TopNavUnauth',
+    surface: 'Shared',
+    classFamily: '.nav / .nav-cta',
+    path: 'src/topnav-unauth.jsx',
+    status: 'FFG-NATIVE',
+    note: 'Unauthenticated top nav: same wordmark + links, swaps avatar for Log in / Get started CTAs. Mounted by UnauthLayout.',
+    render: () => (
+      <Wide>
+        <TopNavUnauth padded={false} />
       </Wide>
     ),
   },

@@ -13,7 +13,6 @@ import { TimelineStep } from '../atoms/TimelineStep';
 import { UpdatesSection } from '../../shared/UpdatesSection';
 import { PARTNER_UPDATE_ITEMS } from '../data/updateItems';
 import { Accordion } from '../modals/Accordion.partner';
-import { ChartCard } from '../charts/ChartCard';
 import { DotChart } from '../charts/DotChart';
 
 // Review-status badge — reflects the org's place in FFG's vetting pipeline
