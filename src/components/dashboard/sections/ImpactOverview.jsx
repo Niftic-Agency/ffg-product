@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { IMPACT_DATA_BY_PERIOD } from '../data/impactData';
 import { IMPACT_AREAS } from '../data/orgTaxonomy';
-import { FilterChip } from '../atoms/FilterChip';
+import { FilterChip } from '../../shared/FilterChip';
 import { Stat } from '../atoms/Stat.app';
-import { AllocModal } from '../modals/AllocModal';
 import { ImpactChart } from './ImpactChart';
 import { AllocationTreemap } from './AllocationTreemap';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
@@ -11,7 +10,6 @@ import { OverviewSelector } from './OverviewSelector';
 
 /* ====== Impact Overview Section ====== */
 function ImpactOverview({ accent, totalContrib = 200000, onTabChange, selectorVariant = 'toggle' }) {
-  const [allocModalOpen, setAllocModalOpen] = useState(false);
   const [scope, setScope] = useState("you");
   const [selectedCircles, setSelectedCircles] = useState([]);
   const [areaFilter, setAreaFilter] = useState("all");
@@ -121,13 +119,12 @@ function ImpactOverview({ accent, totalContrib = 200000, onTabChange, selectorVa
         <div className="alloc-treemap-card">
           <div className="alloc-treemap-head">
             <h3 className="chart-title">Impact areas</h3>
-            <button className="alloc-treemap-view-btn" onClick={() => setAllocModalOpen(true)}>View</button>
+            <button type="button" className="alloc-treemap-view-btn">View</button>
           </div>
           <AllocationTreemap totalContrib={totalContrib} />
         </div>
       </div>
     </section>
-    {allocModalOpen && <AllocModal onClose={() => setAllocModalOpen(false)} />}
     </>);
 
 

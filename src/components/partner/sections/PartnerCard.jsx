@@ -2,7 +2,7 @@ import { BadgeCheck, Info } from 'lucide-react';
 import { PIcon } from '../icons/PIcon';
 import { statusForName, tierForName } from '../data/statusTaxonomy';
 import { PARTNER_DESC } from '../data/partners';
-import { Badge } from '../atoms/Badge';
+import { Badge } from '../../shared/Badge';
 import { LogoPlaceholder } from '../atoms/LogoPlaceholder';
 
 function PartnerCard({ partner, onOpen }) {

@@ -1,4 +1,4 @@
-import { CATEGORY_ICONS } from '../partner/data/categoryIcons.jsx';
+import { CATEGORY_ICONS } from './data/categoryIcons.jsx';
 import { IMPACT_AREA_ICONS } from '../dashboard/data/orgTaxonomy.jsx';
 
 // components/shared/UpdateCard.jsx

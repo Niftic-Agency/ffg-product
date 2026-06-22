@@ -3,7 +3,7 @@ import { PIcon } from '../icons/PIcon';
 import { statusForName, tierForName } from '../data/statusTaxonomy';
 import { PARTNERS } from '../data/partners';
 import { PAGE_SIZE } from '../data/sortOptions';
-import { SortDropdown } from './SortDropdown';
+import { SortDropdown } from '../../shared/SortDropdown';
 import { PartnerCard } from './PartnerCard';
 import { Pagination } from './Pagination';
 
@@ -64,7 +64,7 @@ function Directory({ onOpen }) {
         <div className="pt-toolbar__right">
           <SortDropdown value={sort} onChange={setSort} />
 
-          <button className="pt-chip" style={{ fontSize: "14px", fontWeight: "300" }}>
+          <button className="pt-chip">
             <PIcon.Filter />
             Filter
           </button>

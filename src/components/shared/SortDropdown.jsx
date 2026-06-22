@@ -1,5 +1,5 @@
-import { PIcon } from '../icons/PIcon';
-import { SORT_OPTIONS } from '../data/sortOptions';
+import { PIcon } from '../partner/icons/PIcon';
+import { SORT_OPTIONS } from '../partner/data/sortOptions';
 
 function SortDropdown({ value, onChange }) {
   return (

@@ -1,4 +1,4 @@
-import { CATEGORY_ICONS } from '../data/categoryIcons';
+import { CATEGORY_ICONS } from './data/categoryIcons';
 
 const Badge = ({ children, solid }) => {
   const cat = typeof children === "string" ? CATEGORY_ICONS[children] : null;
