@@ -1,6 +1,6 @@
 
 /* ====== Transaction history ====== */
-/* Organization names mirror the "Our Partners" directory (see partnerList.jsx)
+/* Organization names mirror the "Our Organizations" directory (see organizationList.jsx)
    so transactions read consistently across the product. EINs are placeholder.
    `user` is the attributed giver: "You", or an FFG team member (ffg: true →
    rendered with an [FFG] badge). Most activity is attributed to You; the rest

@@ -1,12 +1,12 @@
 import { UpdateCard } from './UpdateCard';
 
 // components/shared/UpdatesSection.jsx
-// Canonical "Updates from your partners and community" section.
-// Used by FFG Dashboard + FFG Partner. Driven entirely by the `items` array,
+// Canonical "Updates from your organizations and community" section.
+// Used by FFG Dashboard + FFG Organization. Driven entirely by the `items` array,
 // so each surface supplies its own copy/images.
 //
 // Props:
-//   items       {Array}   — update records: { title, body, partner?, tag?, img?, alt? }
+//   items       {Array}   — update records: { title, body, organization?, tag?, img?, alt? }
 //   title       {string?} — section heading
 //   seeMoreHref {string?} — "See more" link target
 
@@ -27,7 +27,7 @@ const UpdatesSection = ({
             key={i}
             title={item.title}
             copy={item.body}
-            partner={item.partner}
+            organization={item.organization}
             tag={item.tag}
             img={item.img}
             alt={item.alt}

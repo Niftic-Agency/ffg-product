@@ -39,20 +39,20 @@ import { ReviewStep } from '../components/onboarding/steps/ReviewStep';
 import { ScaleStep } from '../components/onboarding/steps/ScaleStep';
 import { Submitted } from '../components/onboarding/steps/Submitted';
 
-// ── Partner ──────────────────────────────────────────────────────────────────
+// ── Organization ──────────────────────────────────────────────────────────────────
 import { Badge } from '../components/shared/Badge';
-import { KPI } from '../components/partner/atoms/KPI';
-import { LogoPlaceholder } from '../components/partner/atoms/LogoPlaceholder';
-import { Section } from '../components/partner/atoms/Section';
-import { Stat as StatPartner } from '../components/partner/atoms/Stat.partner';
-import { TimelineStep } from '../components/partner/atoms/TimelineStep';
-import { ReviewStatusBadge, BADGE_TEXT } from '../components/partner/atoms/ReviewStatusBadge';
-import { DotChart } from '../components/partner/charts/DotChart';
-import { Accordion } from '../components/partner/modals/Accordion.partner';
-import { Directory } from '../components/partner/sections/Directory';
-import { Pagination } from '../components/partner/sections/Pagination';
-import { PartnerCard } from '../components/partner/sections/PartnerCard';
-import { PartnerDetail } from '../components/partner/sections/PartnerDetail';
+import { KPI } from '../components/organization/atoms/KPI';
+import { LogoPlaceholder } from '../components/organization/atoms/LogoPlaceholder';
+import { Section } from '../components/organization/atoms/Section';
+import { Stat as StatOrganization } from '../components/organization/atoms/Stat.organization';
+import { TimelineStep } from '../components/organization/atoms/TimelineStep';
+import { ReviewStatusBadge, BADGE_TEXT } from '../components/organization/atoms/ReviewStatusBadge';
+import { DotChart } from '../components/organization/charts/DotChart';
+import { Accordion } from '../components/organization/modals/Accordion.organization';
+import { Directory } from '../components/organization/sections/Directory';
+import { Pagination } from '../components/organization/sections/Pagination';
+import { OrganizationCard } from '../components/organization/sections/OrganizationCard';
+import { OrganizationDetail } from '../components/organization/sections/OrganizationDetail';
 import { SortDropdown } from '../components/shared/SortDropdown';
 
 // ── Shared ───────────────────────────────────────────────────────────────────
@@ -64,10 +64,10 @@ import { TopNav } from '../topnav-auth.jsx';
 import { TopNavUnauth } from '../topnav-unauth.jsx';
 
 // Sample data pulled from the same modules production uses — no new fixtures.
-import { PARTNERS } from '../components/partner/data/partners';
-import { statusForName } from '../components/partner/data/statusTaxonomy';
+import { ORGANIZATIONS } from '../components/organization/data/organizations';
+import { statusForName } from '../components/organization/data/statusTaxonomy';
 import { CATEGORY_ICONS } from '../components/shared/data/categoryIcons';
-import { PARTNER_UPDATE_ITEMS } from '../components/partner/data/updateItems';
+import { ORGANIZATION_UPDATE_ITEMS } from '../components/organization/data/updateItems';
 import { CAUSE_AREAS } from '../components/onboarding/data/causeAreas';
 import { ALLOCATION_DATA } from '../components/dashboard/data/allocationData';
 import { UPDATE_ITEMS } from '../components/dashboard/data/updateItems';
@@ -77,13 +77,13 @@ import { IMPACT_DATA_YEAR } from '../components/dashboard/data/impactData';
 const CATEGORIES = Object.keys(CATEGORY_ICONS);
 const STATUS_PILL_VARIANTS = ['idle', 'active', 'resolved', 'failed', 'cancelled', 'reversed'];
 const CAUSE_IDS = CAUSE_AREAS.map((c) => c.id);
-// One partner per pipeline status (status is hashed from the name).
-const PARTNERS_BY_STATUS = ['Verified', 'Ongoing Review', 'Screening']
-  .map((st) => PARTNERS.find((p) => statusForName(p.name) === st))
+// One organization per pipeline status (status is hashed from the name).
+const ORGANIZATIONS_BY_STATUS = ['Verified', 'Ongoing Review', 'Screening']
+  .map((st) => ORGANIZATIONS.find((p) => statusForName(p.name) === st))
   .filter(Boolean);
-const SAMPLE_PARTNER = PARTNERS[0];
+const SAMPLE_ORGANIZATION = ORGANIZATIONS[0];
 
-const SURFACES = ['All', 'Dashboard', 'Onboarding', 'Partner', 'Shared'];
+const SURFACES = ['All', 'Dashboard', 'Onboarding', 'Organization', 'Shared'];
 
 // ── Small layout helpers ─────────────────────────────────────────────────────
 // A labeled variant cell: the live component above, a caption below.
@@ -267,7 +267,7 @@ const REGISTRY = [
   {
     name: 'AllocationTreemap',
     surface: 'Dashboard',
-    classFamily: '.pt-tm-grid',
+    classFamily: '.org-tm-grid',
     path: 'src/components/dashboard/sections/AllocationTreemap.jsx',
     status: 'FFG-NATIVE',
     note: 'Self-sourced treemap; needs a fixed-height parent.',
@@ -400,7 +400,7 @@ const REGISTRY = [
             update={{
               type: 'update-action',
               title: 'Confirm your June allocation',
-              copy: 'Your monthly gift is ready to send to your chosen partners.',
+              copy: 'Your monthly gift is ready to send to your chosen organizations.',
               action: { label: 'Review & confirm', onClick: noop },
             }}
           />
@@ -409,7 +409,7 @@ const REGISTRY = [
           <UpdatesArea
             update={{
               type: 'update-advisory',
-              title: 'A partner is completing verification',
+              title: 'A organization is completing verification',
               copy: 'Jesse Tree is finishing review — allocations resume once verified.',
             }}
           />
@@ -611,14 +611,14 @@ const REGISTRY = [
     ),
   },
 
-  // ── Partner ──────────────────────────────────────────────────────────────────
+  // ── Organization ──────────────────────────────────────────────────────────────────
   {
     name: 'Badge',
     surface: 'Shared',
-    classFamily: '.pt-badge / .impact-badge',
+    classFamily: '.org-badge / .impact-badge',
     path: 'src/components/shared/Badge.jsx',
     status: 'FFG-NATIVE',
-    note: 'Two paths only: impact-badge (icon, per category) and the plain pt-badge / pt-badge--solid pill. Any other text routes to pt-badge — the label varies, the variant does not.',
+    note: 'Two paths only: impact-badge (icon, per category) and the plain org-badge / org-badge--solid pill. Any other text routes to org-badge — the label varies, the variant does not.',
     render: () => (
       <div style={{ display: 'grid', gap: 20, width: '100%' }}>
         <Variants gap={10} align="center">
@@ -627,10 +627,10 @@ const REGISTRY = [
           ))}
         </Variants>
         <Variants gap={16} align="center">
-          <Variant label="pt-badge">
+          <Variant label="org-badge">
             <Badge>Featured</Badge>
           </Variant>
-          <Variant label="pt-badge--solid">
+          <Variant label="org-badge--solid">
             <Badge solid>Featured</Badge>
           </Variant>
         </Variants>
@@ -639,11 +639,11 @@ const REGISTRY = [
   },
   {
     name: 'ReviewStatusBadge',
-    surface: 'Partner',
+    surface: 'Organization',
     classFamily: '.impact-badge / .impact-badge--verified',
-    path: 'src/components/partner/atoms/ReviewStatusBadge.jsx',
+    path: 'src/components/organization/atoms/ReviewStatusBadge.jsx',
     status: 'FFG-NATIVE',
-    note: 'Vetting-pipeline pill — one icon per status. The "backed by" pill (last) is a sibling inline span in PartnerDetail that shares BADGE_TEXT, not part of this component.',
+    note: 'Vetting-pipeline pill — one icon per status. The "backed by" pill (last) is a sibling inline span in OrganizationDetail that shares BADGE_TEXT, not part of this component.',
     render: () => (
       <Variants gap={12} align="center">
         {['Verified', 'Ongoing Review', 'Screening'].map((status) => (
@@ -661,9 +661,9 @@ const REGISTRY = [
   },
   {
     name: 'KPI',
-    surface: 'Partner',
-    classFamily: '.pt-kpi',
-    path: 'src/components/partner/atoms/KPI.jsx',
+    surface: 'Organization',
+    classFamily: '.org-kpi',
+    path: 'src/components/organization/atoms/KPI.jsx',
     status: 'FFG-NATIVE',
     render: () => (
       <Variants gap={24} align="flex-start">
@@ -675,14 +675,14 @@ const REGISTRY = [
   },
   {
     name: 'LogoPlaceholder',
-    surface: 'Partner',
-    classFamily: '.pt-logo',
-    path: 'src/components/partner/atoms/LogoPlaceholder.jsx',
+    surface: 'Organization',
+    classFamily: '.org-logo',
+    path: 'src/components/organization/atoms/LogoPlaceholder.jsx',
     status: 'FFG-NATIVE',
-    note: 'Initials + deterministic palette from the partner name.',
+    note: 'Initials + deterministic palette from the organization name.',
     render: () => (
       <Variants gap={16} align="center">
-        {PARTNERS.slice(0, 5).map((p) => (
+        {ORGANIZATIONS.slice(0, 5).map((p) => (
           <Variant key={p.name} label={p.name}>
             <LogoPlaceholder name={p.name} size={56} />
           </Variant>
@@ -692,41 +692,41 @@ const REGISTRY = [
   },
   {
     name: 'Section',
-    surface: 'Partner',
-    classFamily: '.pt-sec',
-    path: 'src/components/partner/atoms/Section.jsx',
+    surface: 'Organization',
+    classFamily: '.org-sec',
+    path: 'src/components/organization/atoms/Section.jsx',
     status: 'FFG-NATIVE',
     note: 'Titled content block (fullWidth used here).',
     render: () => (
       <Wide>
-        <Section title="About this partner" body="A short description of the organization and its work." fullWidth>
+        <Section title="About this organization" body="A short description of the organization and its work." fullWidth>
           <p style={{ margin: 0 }}>Body content goes here.</p>
         </Section>
       </Wide>
     ),
   },
   {
-    name: 'Stat (partner)',
-    surface: 'Partner',
-    classFamily: '.pt-stat / .pt-info',
-    path: 'src/components/partner/atoms/Stat.partner.jsx',
+    name: 'Stat (organization)',
+    surface: 'Organization',
+    classFamily: '.org-stat / .org-info',
+    path: 'src/components/organization/atoms/Stat.organization.jsx',
     status: 'FFG-NATIVE',
     render: () => (
       <Variants gap={24} align="flex-start">
-        <StatPartner label="Cost per outcome" value="$142" />
-        <StatPartner label="Outcomes / yr" value="3,400" />
+        <StatOrganization label="Cost per outcome" value="$142" />
+        <StatOrganization label="Outcomes / yr" value="3,400" />
       </Variants>
     ),
   },
   {
     name: 'TimelineStep',
-    surface: 'Partner',
-    classFamily: '.pt-tl-card (.pt-tl-cards)',
-    path: 'src/components/partner/atoms/TimelineStep.jsx',
+    surface: 'Organization',
+    classFamily: '.org-tl-card (.org-tl-cards)',
+    path: 'src/components/organization/atoms/TimelineStep.jsx',
     status: 'FFG-NATIVE',
     note: 'The full four-step intervention sequence.',
     render: () => (
-      <div className="pt-tl-cards" style={{ maxWidth: 560 }}>
+      <div className="org-tl-cards" style={{ maxWidth: 560 }}>
         <TimelineStep n="01" tag="Funding" time="1–2 weeks" />
         <TimelineStep n="02" tag="Intervention" time="6–8 weeks" />
         <TimelineStep n="03" tag="Outputs" time="6–8 Months" />
@@ -736,9 +736,9 @@ const REGISTRY = [
   },
   {
     name: 'DotChart',
-    surface: 'Partner',
-    classFamily: '.pt-label-row / .pt-info',
-    path: 'src/components/partner/charts/DotChart.jsx',
+    surface: 'Organization',
+    classFamily: '.org-label-row / .org-info',
+    path: 'src/components/organization/charts/DotChart.jsx',
     status: 'FFG-NATIVE',
     note: 'Log-scaled people-reached dot field.',
     render: () => (
@@ -749,9 +749,9 @@ const REGISTRY = [
   },
   {
     name: 'Accordion',
-    surface: 'Partner',
-    classFamily: '.pt-acc',
-    path: 'src/components/partner/modals/Accordion.partner.jsx',
+    surface: 'Organization',
+    classFamily: '.org-acc',
+    path: 'src/components/organization/modals/Accordion.organization.jsx',
     status: 'FFG-NATIVE',
     note: 'Click-toggle disclosure; default-open and variant shown.',
     render: () => (
@@ -765,12 +765,12 @@ const REGISTRY = [
   },
   {
     name: 'Directory',
-    surface: 'Partner',
-    classFamily: '.pt-dir / .pt-grid',
-    path: 'src/components/partner/sections/Directory.jsx',
+    surface: 'Organization',
+    classFamily: '.org-dir / .org-grid',
+    path: 'src/components/organization/sections/Directory.jsx',
     status: 'FFG-NATIVE',
-    note: 'Full partner directory — toolbar, grid, pagination.',
-    nested: ['SortDropdown', 'PartnerCard', 'Pagination'],
+    note: 'Full organization directory — toolbar, grid, pagination.',
+    nested: ['SortDropdown', 'OrganizationCard', 'Pagination'],
     render: () => (
       <Wide>
         <Directory onOpen={noop} />
@@ -779,9 +779,9 @@ const REGISTRY = [
   },
   {
     name: 'Pagination',
-    surface: 'Partner',
-    classFamily: '.pt-pagination',
-    path: 'src/components/partner/sections/Pagination.jsx',
+    surface: 'Organization',
+    classFamily: '.org-pagination',
+    path: 'src/components/organization/sections/Pagination.jsx',
     status: 'FFG-NATIVE',
     note: 'Token compaction at the start, middle, and end of a long range.',
     render: () => (
@@ -799,19 +799,19 @@ const REGISTRY = [
     ),
   },
   {
-    name: 'PartnerCard',
-    surface: 'Partner',
-    classFamily: '.pt-card',
-    path: 'src/components/partner/sections/PartnerCard.jsx',
+    name: 'OrganizationCard',
+    surface: 'Organization',
+    classFamily: '.org-card',
+    path: 'src/components/organization/sections/OrganizationCard.jsx',
     status: 'FFG-NATIVE',
     note: 'One card per pipeline status — Verified, Ongoing Review, Screening.',
     nested: ['LogoPlaceholder', 'Badge'],
     render: () => (
       <Variants gap={20} align="flex-start">
-        {PARTNERS_BY_STATUS.map((p) => (
+        {ORGANIZATIONS_BY_STATUS.map((p) => (
           <Variant key={p.name} label={statusForName(p.name)}>
             <div style={{ width: 280 }}>
-              <PartnerCard partner={p} onOpen={() => {}} />
+              <OrganizationCard organization={p} onOpen={() => {}} />
             </div>
           </Variant>
         ))}
@@ -819,23 +819,23 @@ const REGISTRY = [
     ),
   },
   {
-    name: 'PartnerDetail',
-    surface: 'Partner',
-    classFamily: '.pt-detail / .pt-hero',
-    path: 'src/components/partner/sections/PartnerDetail.jsx',
+    name: 'OrganizationDetail',
+    surface: 'Organization',
+    classFamily: '.org-detail / .org-hero',
+    path: 'src/components/organization/sections/OrganizationDetail.jsx',
     status: 'FFG-NATIVE',
-    note: 'Full partner profile — deep composite (treemap, charts, updates).',
-    nested: ['LogoPlaceholder', 'Badge', 'ReviewStatusBadge', 'KPI', 'Stat (partner)', 'Section', 'TimelineStep', 'DotChart', 'CauseAllocationTreemap', 'Accordion', 'UpdatesSection'],
+    note: 'Full organization profile — deep composite (treemap, charts, updates).',
+    nested: ['LogoPlaceholder', 'Badge', 'ReviewStatusBadge', 'KPI', 'Stat (organization)', 'Section', 'TimelineStep', 'DotChart', 'CauseAllocationTreemap', 'Accordion', 'UpdatesSection'],
     render: () => (
       <Wide>
-        <PartnerDetail partner={SAMPLE_PARTNER} onBack={noop} />
+        <OrganizationDetail organization={SAMPLE_ORGANIZATION} onBack={noop} />
       </Wide>
     ),
   },
   {
     name: 'SortDropdown',
     surface: 'Shared',
-    classFamily: '.pt-sort-native',
+    classFamily: '.org-sort-native',
     path: 'src/components/shared/SortDropdown.jsx',
     status: 'FFG-NATIVE',
     note: 'Native sort select (controlled).',
@@ -846,10 +846,10 @@ const REGISTRY = [
   {
     name: 'CauseAllocationTreemap',
     surface: 'Shared',
-    classFamily: '.pt-tm-rc / .pt-tm__*',
+    classFamily: '.org-tm-rc / .org-tm__*',
     path: 'src/components/shared/CauseAllocationTreemap.jsx',
     status: 'FFG-NATIVE',
-    note: 'Recharts treemap shared by Dashboard + Partner; needs a height.',
+    note: 'Recharts treemap shared by Dashboard + Organization; needs a height.',
     render: () => (
       <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: 240 }}>
         <CauseAllocationTreemap data={ALLOCATION_DATA} />
@@ -883,7 +883,7 @@ const REGISTRY = [
             <UpdateCard
               title={item.title}
               copy={item.body}
-              partner={item.partner}
+              organization={item.organization}
               tag={item.tag}
               img={item.img}
               alt={item.alt}
@@ -895,7 +895,7 @@ const REGISTRY = [
             <UpdateCard
               title="120 families kept in their homes"
               copy="Emergency rental assistance reached a record number of households facing eviction this quarter."
-              partner="Jesse Tree"
+              organization="Jesse Tree"
               tag="Community"
             />
           </div>
@@ -913,7 +913,7 @@ const REGISTRY = [
     nested: ['UpdateCard'],
     render: () => (
       <Wide>
-        <UpdatesSection items={PARTNER_UPDATE_ITEMS} title="Recent updates" />
+        <UpdatesSection items={ORGANIZATION_UPDATE_ITEMS} title="Recent updates" />
       </Wide>
     ),
   },
@@ -948,7 +948,7 @@ const REGISTRY = [
 const SURFACE_COLORS = {
   Dashboard: '#15315A',
   Onboarding: '#5B7A3A',
-  Partner: '#8A5A2B',
+  Organization: '#8A5A2B',
   Shared: '#6B5B95',
 };
 

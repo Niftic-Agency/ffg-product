@@ -32,11 +32,11 @@ function DotChart({ peopleReached = 120, depth = 1.8 }) {
 
   return (
     <div>
-      <div className="pt-label-row">
-        <span className="pt-label">Intervention Impact</span>
-        <PIcon.Info className="pt-info" />
+      <div className="org-label-row">
+        <span className="org-label">Intervention Impact</span>
+        <PIcon.Info className="org-info" />
       </div>
-      <p className="pt-sub" style={{ fontSize: '14px' }}>
+      <p className="org-sub" style={{ fontSize: '14px' }}>
         This shows the overall intensity of the intervention measuring the reach and impact per person
       </p>
       <svg

@@ -1,7 +1,7 @@
 
 // ── Shared ───────────────────────────────────────────────────────────────────
 
-// Category icon + accent color map. Keys match the values used in partner.tags.
+// Category icon + accent color map. Keys match the values used in organization.tags.
 // Icons: Lucide scale, coins, heart-handshake, sprout, shapes, heart, graduation-cap, pencil-line.
 // Colors and icons are the single source — CSS classes (.impact-badge--*) in styles.css carry the color.
 const CATEGORY_ICONS = {

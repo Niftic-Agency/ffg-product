@@ -12,7 +12,7 @@ const Badge = ({ children, solid }) => {
 
 
   }
-  return <span className={"pt-badge" + (solid ? " pt-badge--solid" : "")} style={{ fontSize: "14px", fontWeight: "400" }}>{children}</span>;
+  return <span className={"org-badge" + (solid ? " org-badge--solid" : "")} style={{ fontSize: "14px", fontWeight: "400" }}>{children}</span>;
 };
 
 
