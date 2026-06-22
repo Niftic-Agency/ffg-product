@@ -38,14 +38,14 @@ Register the new file in [`index.js`](index.js):
 ```js
 import yourSurface from './your-surface.json';
 
-export const GRADIENTS = { dashboard, partner, onboarding, onboardingActive, yourSurface };
+export const GRADIENTS = { dashboard, organization, onboarding, onboardingActive, yourSurface };
 ```
 
 If the gradient belongs to a **route**, map the path in `gradientForPath()`:
 
 ```js
 export function gradientForPath(pathname = '') {
-  if (pathname.startsWith('/partner')) return GRADIENTS.partner;
+  if (pathname.startsWith('/organizations')) return GRADIENTS.organization;
   if (pathname.startsWith('/onboarding')) return GRADIENTS.onboarding;
   if (pathname.startsWith('/your-surface')) return GRADIENTS.yourSurface;
   return GRADIENTS[DEFAULT_GRADIENT];

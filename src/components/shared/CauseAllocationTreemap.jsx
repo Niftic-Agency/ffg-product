@@ -2,7 +2,7 @@ import { Treemap, ResponsiveContainer } from 'recharts';
 import { CATEGORY_ICONS } from './data/categoryIcons';
 
 /* ====== Canonical cause-allocation treemap ====== */
-// Single source of truth shared by the partner page and the dashboard.
+// Single source of truth shared by the organization page and the dashboard.
 // Recharts lays the cells out proportionally (a 40% block is 8x a 5% block);
 // the custom cell below keeps the FFG styling — hairline brand-colored border,
 // 8px color dot, "%" + label. Colors come from CATEGORY_ICONS so the two pages
@@ -39,7 +39,7 @@ function TreemapCell(props) {
   return (
     <g>
       <rect
-        className="pt-tm__rect"
+        className="org-tm__rect"
         x={rx}
         y={ry}
         width={rw}
@@ -50,10 +50,10 @@ function TreemapCell(props) {
 
       {showLabel &&
       <foreignObject x={rx} y={ry} width={rw} height={rh} style={{ pointerEvents: "none" }}>
-          <div xmlns="http://www.w3.org/1999/xhtml" className="pt-tm__label">
-            <div className="pt-tm__pct">{pct}%</div>
-            <div className="pt-tm__cat">
-              <span className="pt-tm__dot" style={{ background: color }} />
+          <div xmlns="http://www.w3.org/1999/xhtml" className="org-tm__label">
+            <div className="org-tm__pct">{pct}%</div>
+            <div className="org-tm__cat">
+              <span className="org-tm__dot" style={{ background: color }} />
               {showName && name}
             </div>
           </div>
@@ -71,7 +71,7 @@ function CauseAllocationTreemap({ data, className = "" }) {
   sort((a, b) => b.size - a.size);
 
   return (
-    <div className={"pt-tm-rc" + (className ? " " + className : "")}>
+    <div className={"org-tm-rc" + (className ? " " + className : "")}>
       <ResponsiveContainer width="100%" height="100%">
         <Treemap
           data={nodes}

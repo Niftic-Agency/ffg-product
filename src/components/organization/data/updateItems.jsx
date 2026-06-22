@@ -1,6 +1,6 @@
 
-/* ====== Partner-surface updates ====== */
-const PARTNER_UPDATE_ITEMS = [
+/* ====== Organization-surface updates ====== */
+const ORGANIZATION_UPDATE_ITEMS = [
 {
   title: "New shelter site opens in Treasure Valley",
   body: "We've opened a new shelter wing with capacity to serve another 100 families this winter.",
@@ -21,4 +21,4 @@ const PARTNER_UPDATE_ITEMS = [
 }];
 
 
-export { PARTNER_UPDATE_ITEMS };
+export { ORGANIZATION_UPDATE_ITEMS };

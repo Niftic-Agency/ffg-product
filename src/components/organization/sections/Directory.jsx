@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { PIcon } from '../icons/PIcon';
 import { statusForName, tierForName } from '../data/statusTaxonomy';
-import { PARTNERS } from '../data/partners';
+import { ORGANIZATIONS } from '../data/organizations';
 import { PAGE_SIZE } from '../data/sortOptions';
 import { SortDropdown } from '../../shared/SortDropdown';
-import { PartnerCard } from './PartnerCard';
+import { OrganizationCard } from './OrganizationCard';
 import { Pagination } from './Pagination';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -15,7 +15,7 @@ function Directory({ onOpen }) {
   const [sort, setSort] = useState("recommended");
 
   const sorted = useMemo(() => {
-    const list = PARTNERS.slice();
+    const list = ORGANIZATIONS.slice();
     if (sort === "az") list.sort((a, b) => a.name.localeCompare(b.name));
     // Tier sort: highest tier first, then A–Z within a tier so the order is
     // deterministic and the user can scan the top of the list as "most vetted".
@@ -40,7 +40,7 @@ function Directory({ onOpen }) {
     const clamped = Math.max(1, Math.min(totalPages, next));
     setPage(clamped);
     requestAnimationFrame(() => {
-      const el = document.querySelector(".pt-toolbar");
+      const el = document.querySelector(".org-toolbar");
       if (el) {
         const top = el.getBoundingClientRect().top + window.scrollY - 24;
         window.scrollTo({ top, behavior: "smooth" });
@@ -49,33 +49,33 @@ function Directory({ onOpen }) {
   };
 
   return (
-    <div className="pt-dir">
-      <header className="pt-dir__head">
-        <h1 className="pt-dir__title" style={{ fontSize: "48px", fontWeight: "300" }}>Our Opportunities</h1>
-        <p className="pt-dir__sub" style={{ color: "var(--ffg-muted)", fontWeight: "300", fontSize: "16px" }}>
+    <div className="org-dir">
+      <header className="org-dir__head">
+        <h1 className="org-dir__title" style={{ fontSize: "48px", fontWeight: "300" }}>Our Opportunities</h1>
+        <p className="org-dir__sub" style={{ color: "var(--ffg-muted)", fontWeight: "300", fontSize: "16px" }}>
           Browse all of the organizations we partner with and find the right match for you.
         </p>
       </header>
 
-      <div className="pt-toolbar">
-        <div className="pt-toolbar__results" style={{ fontSize: "14px", color: "var(--ffg-surface-900)" }}>
-          <span className="pt-toolbar__count" style={{ fontSize: "14px", fontWeight: "400", color: "var(--ffg-surface-900)" }}>{PARTNERS.length}</span> organizations
+      <div className="org-toolbar">
+        <div className="org-toolbar__results" style={{ fontSize: "14px", color: "var(--ffg-surface-900)" }}>
+          <span className="org-toolbar__count" style={{ fontSize: "14px", fontWeight: "400", color: "var(--ffg-surface-900)" }}>{ORGANIZATIONS.length}</span> organizations
         </div>
-        <div className="pt-toolbar__right">
+        <div className="org-toolbar__right">
           <SortDropdown value={sort} onChange={setSort} />
 
-          <button className="pt-chip">
+          <button className="org-chip">
             <PIcon.Filter />
             Filter
           </button>
         </div>
       </div>
 
-      <div className="pt-grid">
+      <div className="org-grid">
         {pageItems.map((p) =>
-        <PartnerCard
+        <OrganizationCard
           key={p.name}
-          partner={p}
+          organization={p}
           onOpen={() => onOpen(p)} />
 
         )}

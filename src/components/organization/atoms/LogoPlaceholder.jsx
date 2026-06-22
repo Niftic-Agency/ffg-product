@@ -58,7 +58,7 @@ function LogoPlaceholder({ size = 50, name = "", style: styleProp }) {
 
   return (
     <svg
-      className="pt-logo"
+      className="org-logo"
       width={size}
       height={size}
       viewBox="0 0 50 50"

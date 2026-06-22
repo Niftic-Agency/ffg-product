@@ -6,7 +6,7 @@ const IMPACT_AREAS = [
 "Environment", "Health", "Humanitarian", "Social Justice"];
 
 
-// Lucide icon SVGs keyed by impact area — mirrors CATEGORY_ICONS in partner.jsx.
+// Lucide icon SVGs keyed by impact area — mirrors CATEGORY_ICONS in organization.jsx.
 // CSS classes (.impact-badge--*) in styles.css carry the accent color.
 const IMPACT_AREA_ICONS = {
   "Social Justice":
@@ -63,7 +63,7 @@ const IMPACT_AREA_ICONS = {
 
 };
 
-// ── Logo placeholder for org rows (mirrors partner.jsx LogoPlaceholder) ───
+// ── Logo placeholder for org rows (mirrors organization.jsx LogoPlaceholder) ───
 const ORG_LOGO_PALETTES = [
 { bg: "#FFFFFF", fg: "#1F6FB0" }, // civic blue
 { bg: "#FFFFFF", fg: "#0E8A77" }, // teal

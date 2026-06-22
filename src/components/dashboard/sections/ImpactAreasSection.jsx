@@ -2,20 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '../icons/Icon';
 import { STRATEGIES, IMPACT_AREAS, IMPACT_AREA_ICONS } from '../data/orgTaxonomy';
-import { ORGS } from '../data/partnerList';
+import { ORGS } from '../data/organizationList';
 import { OrgLogoPlaceholder } from '../atoms/OrgLogoPlaceholder';
 
 function OrgRow({ org }) {
   const [added, setAdded] = useState(false);
   const navigate = useNavigate();
-  const openPartner = () => navigate(`/partner/${encodeURIComponent(org.name)}`);
+  const openOrganization = () => navigate(`/organizations/${encodeURIComponent(org.name)}`);
   return (
     <article
       className="org-row"
       role="link"
       tabIndex={0}
-      onClick={openPartner}
-      onKeyDown={(e) => {if (e.key === "Enter" || e.key === " ") {e.preventDefault();openPartner();}}}>
+      onClick={openOrganization}
+      onKeyDown={(e) => {if (e.key === "Enter" || e.key === " ") {e.preventDefault();openOrganization();}}}>
 
       <OrgLogoPlaceholder name={org.name} size={48} />
       <div className="org-row__body">

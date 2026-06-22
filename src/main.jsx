@@ -13,7 +13,7 @@ import DashboardUnauth from './surfaces/DashboardUnauth.jsx';
 import Home from './surfaces/Home.jsx';
 import Onboarding from './surfaces/Onboarding.jsx';
 import OrganizationsUnauth from './surfaces/OrganizationsUnauth.jsx';
-import Partner from './surfaces/Partner.jsx';
+import Organization from './surfaces/Organization.jsx';
 import ShadcnDemo from './surfaces/ShadcnDemo.jsx';
 import Inventory from './surfaces/Inventory.jsx';
 
@@ -32,10 +32,10 @@ const router = createBrowserRouter([
         children: [
           { path: '/dashboard', element: <Dashboard /> },
           {
-            // Bare path shows the directory; :name deep-links to one partner's detail.
-            path: '/partner/:name?',
-            element: <Partner />,
-            // Partner runs a lighter type scale than the other authenticated
+            // Bare path shows the directory; :name deep-links to one organization's detail.
+            path: '/organizations/:name?',
+            element: <Organization />,
+            // Organization runs a lighter type scale than the other authenticated
             // surfaces. (The mesh shows through by default — see .app in styles.css.)
             handle: { appStyle: { fontSize: '14px', fontWeight: 200 } },
           },
@@ -46,7 +46,7 @@ const router = createBrowserRouter([
         children: [
           { path: '/home', element: <Home /> },
           { path: '/dashboard-unauth', element: <DashboardUnauth /> },
-          { path: '/organizations', element: <OrganizationsUnauth /> },
+          { path: '/organizations-unauth', element: <OrganizationsUnauth /> },
         ],
       },
       { path: '/onboarding', element: <Onboarding /> },

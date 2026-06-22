@@ -1,6 +1,6 @@
 
-// ── Partners from the Our Partners directory ──────────────────────────────
-const PARTNER_LIST = [
+// ── Organizations from the Our Organizations directory ──────────────────────────────
+const ORGANIZATION_LIST = [
 { name: "Jesse Tree", location: "Boise, Idaho", tags: ["Community", "Education"], cost: 142 },
 { name: "Bright Path Learning", location: "Detroit, Michigan", tags: ["Education", "Community"], cost: 168 },
 { name: "Open Harvest", location: "Lincoln, Nebraska", tags: ["Humanitarian", "Community"], cost: 96 },
@@ -46,7 +46,7 @@ function _pSeed(str) {
 }
 const _STRATS = ["Angel", "SPV", "Fund", "Granted", "Pooled"];
 
-const ORGS = PARTNER_LIST.map((p) => {
+const ORGS = ORGANIZATION_LIST.map((p) => {
   const confidence = _pSeed(p.name + "c") % 40 + 60; // 60–99% confidence level
   const strategy = _STRATS[_pSeed(p.name + "s") % _STRATS.length];
   const lives = Math.round((_pSeed(p.name + "l") % 38000 + 3000) / 100) * 100;
@@ -56,4 +56,4 @@ const ORGS = PARTNER_LIST.map((p) => {
 });
 
 
-export { PARTNER_LIST, _pSeed, _STRATS, ORGS };
+export { ORGANIZATION_LIST, _pSeed, _STRATS, ORGS };

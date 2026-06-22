@@ -6,17 +6,17 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 // that includes this script.
 
 // Primary nav links. The auth and unauth navs share the same shape but point
-// Dashboard at their respective surfaces. "Organizations" maps to the partner
+// Dashboard at their respective surfaces. "Organizations" maps to the organization
 // surface in both.
 const NAV_LINKS = [
   { label: 'Dashboard', to: '/dashboard' },
-  { label: 'Organizations', to: '/partner' },
+  { label: 'Organizations', to: "/organizations" },
 ];
 const NAV_LINKS_UNAUTH = [
   { label: 'Dashboard', to: '/dashboard-unauth' },
-  // The authenticated partner directory lives behind sign-in; the unauth nav
+  // The authenticated organization directory lives behind sign-in; the unauth nav
   // points at the public Organizations placeholder instead.
-  { label: 'Organizations', to: '/organizations' },
+  { label: 'Organizations', to: '/organizations-unauth' },
 ];
 
 // Primary nav links, rendered as react-router NavLinks with an active state.

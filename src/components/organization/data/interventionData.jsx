@@ -1,5 +1,5 @@
 
-// Mock data for partner intervention charts — matches dashboard styling
+// Mock data for organization intervention charts — matches dashboard styling
 const INTERVENTION_DATA = [
 { month: "Oct", org: 42, avg: 38 },
 { month: "Nov", org: 58, avg: 45 },

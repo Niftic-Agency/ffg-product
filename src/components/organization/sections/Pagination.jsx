@@ -18,23 +18,23 @@ function Pagination({ page, totalPages, onChange }) {
   }, [page, totalPages]);
 
   return (
-    <nav className="pt-pagination" aria-label="Pagination">
+    <nav className="org-pagination" aria-label="Pagination">
       <button
-        className="pt-pg pt-pg--arrow"
+        className="org-pg org-pg--arrow"
         aria-label="Previous page"
         disabled={page <= 1}
         onClick={() => onChange(page - 1)}>
 
         <PIcon.ArrowLeft />
       </button>
-      <div className="pt-pg__nums">
+      <div className="org-pg__nums">
         {tokens.map((t, i) =>
         t === "…" ?
-        <span key={"e" + i} className="pt-pg__ellip">…</span> :
+        <span key={"e" + i} className="org-pg__ellip">…</span> :
 
         <button
           key={t}
-          className={"pt-pg pt-pg--num" + (t === page ? " is-active" : "")}
+          className={"org-pg org-pg--num" + (t === page ? " is-active" : "")}
           aria-current={t === page ? "page" : undefined}
           onClick={() => onChange(t)}>
 
@@ -44,7 +44,7 @@ function Pagination({ page, totalPages, onChange }) {
         )}
       </div>
       <button
-        className="pt-pg pt-pg--arrow"
+        className="org-pg org-pg--arrow"
         aria-label="Next page"
         disabled={page >= totalPages}
         onClick={() => onChange(page + 1)}>

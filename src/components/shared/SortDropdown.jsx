@@ -1,13 +1,13 @@
-import { PIcon } from '../partner/icons/PIcon';
-import { SORT_OPTIONS } from '../partner/data/sortOptions';
+import { PIcon } from '../organization/icons/PIcon';
+import { SORT_OPTIONS } from '../organization/data/sortOptions';
 
 function SortDropdown({ value, onChange }) {
   return (
-    <label className="pt-sort-native">
+    <label className="org-sort-native">
       <PIcon.Sort />
-      <span className="pt-sort-native__label">Sort by:</span>
+      <span className="org-sort-native__label">Sort by:</span>
       <select
-        className="pt-sort-native__select"
+        className="org-sort-native__select"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >

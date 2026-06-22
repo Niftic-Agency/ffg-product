@@ -1,10 +1,10 @@
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 // Detail view keeps its scripted copy; directory cards each describe their own org.
-const PARTNER_DESC =
+const ORGANIZATION_DESC =
 "Jesse Tree works to prevent eviction and homelessness by providing rental and mortgage assistance to families in crisis.";
 
-const PARTNERS = [
+const ORGANIZATIONS = [
 { name: "Jesse Tree", location: "Boise, Idaho", tags: ["Community", "Education"], cost: 142,
   desc: "Prevents eviction and homelessness with emergency rental and mortgage assistance for families on the edge of crisis." },
 { name: "Bright Path Learning", location: "Detroit, Michigan", tags: ["Education", "Community"], cost: 168,
@@ -83,4 +83,4 @@ const PARTNERS = [
   desc: "Distributes weekend grocery boxes to families with school-age children across central Appalachia." }];
 
 
-export { PARTNER_DESC, PARTNERS };
+export { ORGANIZATION_DESC, ORGANIZATIONS };
