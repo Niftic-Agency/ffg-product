@@ -1,0 +1,24 @@
+{
+  // This project is plain JS built by Vite/esbuild — there is no `tsc` in the
+  // build. This file exists so the shadcn CLI (`npx shadcn add @ffg/<name>`,
+  // tsx:true in components.json) can resolve the `@/*` alias, and so editors
+  // get the same IntelliSense the old jsconfig.json provided. allowJs +
+  // checkJs:false + noEmit keep it non-intrusive to the JS codebase.
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
