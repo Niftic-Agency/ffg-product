@@ -15,13 +15,10 @@ import { RidgeDivider } from '../components/dashboard/atoms/RidgeDivider';
 import { Stat as StatApp } from '../components/dashboard/atoms/Stat.app';
 import { StatusPill } from '../components/dashboard/atoms/StatusPill';
 import { AllocationTreemap } from '../components/dashboard/sections/AllocationTreemap';
-import { Hero } from '../components/dashboard/sections/Hero';
-import { ImpactAreasSection } from '../components/dashboard/sections/ImpactAreasSection';
 import { ImpactChart } from '../components/dashboard/sections/ImpactChart';
-import { ImpactOverview } from '../components/dashboard/sections/ImpactOverview';
+import { OrgRow } from '../components/dashboard/sections/OrgRow';
 import { OverviewSelector } from '../components/dashboard/sections/OverviewSelector';
 import { PageTabs } from '../components/dashboard/sections/PageTabs';
-import { TransactionHistorySection } from '../components/dashboard/sections/TransactionHistorySection';
 import { UpdatesArea } from '../components/dashboard/sections/UpdatesArea';
 import { DynamicAction } from '../components/dashboard/sections/hero/DynamicAction';
 import { Stepper } from '../components/dashboard/sections/hero/Stepper';
@@ -34,7 +31,6 @@ import { StepChrome } from '../components/onboarding/atoms/StepChrome';
 import { CausePriorities } from '../components/onboarding/steps/CausePriorities';
 import { GoalsStep } from '../components/onboarding/steps/GoalsStep';
 import { Landing } from '../components/onboarding/steps/Landing';
-import { ReviewStep } from '../components/onboarding/steps/ReviewStep';
 import { ScaleStep } from '../components/onboarding/steps/ScaleStep';
 import { Submitted } from '../components/onboarding/steps/Submitted';
 
@@ -47,11 +43,11 @@ import { Stat as StatOrganization } from '../components/organization/atoms/Stat.
 import { TimelineStep } from '../components/organization/atoms/TimelineStep';
 import { ReviewStatusBadge, BADGE_TEXT } from '../components/organization/atoms/ReviewStatusBadge';
 import { DotChart } from '../components/organization/charts/DotChart';
+import { PIcon } from '../components/organization/icons/PIcon';
 import { Accordion } from '../components/organization/modals/Accordion.organization';
-import { Directory } from '../components/organization/sections/Directory';
+import { OrgAccordionItem } from '../components/organization/sections/OrgAccordionItem';
 import { Pagination } from '../components/organization/sections/Pagination';
 import { OrganizationCard } from '../components/organization/sections/OrganizationCard';
-import { OrganizationDetail } from '../components/organization/sections/OrganizationDetail';
 import { SortDropdown } from '../components/shared/SortDropdown';
 
 // ── Shared ───────────────────────────────────────────────────────────────────
@@ -71,6 +67,7 @@ import { CAUSE_AREAS } from '../components/onboarding/data/causeAreas';
 import { ALLOCATION_DATA } from '../components/dashboard/data/allocationData';
 import { UPDATE_ITEMS } from '../components/dashboard/data/updateItems';
 import { IMPACT_DATA_YEAR } from '../components/dashboard/data/impactData';
+import { ORGS } from '../components/dashboard/data/organizationList';
 
 // ── Derived variant sets ─────────────────────────────────────────────────────
 const CATEGORIES = Object.keys(CATEGORY_ICONS);
@@ -80,7 +77,6 @@ const CAUSE_IDS = CAUSE_AREAS.map((c) => c.id);
 const ORGANIZATIONS_BY_STATUS = ['Verified', 'Ongoing Review', 'Screening']
   .map((st) => ORGANIZATIONS.find((p) => statusForName(p.name) === st))
   .filter(Boolean);
-const SAMPLE_ORGANIZATION = ORGANIZATIONS[0];
 
 const SURFACES = ['All', 'Dashboard', 'Onboarding', 'Organization', 'Shared'];
 
@@ -280,30 +276,16 @@ const REGISTRY = [
     ),
   },
   {
-    name: 'Hero',
+    name: 'org-row',
     surface: 'Dashboard',
-    classFamily: '.hero',
-    path: 'src/components/dashboard/sections/Hero.jsx',
+    classFamily: '.org-row',
+    path: 'src/components/dashboard/sections/OrgRow.jsx',
     status: 'FFG-NATIVE',
-    note: 'Welcome + dynamic action composite (uses sonner toasts).',
-    nested: ['Welcome (hero)', 'DynamicAction (hero)'],
+    note: 'Single organization row — uses useNavigate, served by the app router.',
+    nested: ['OrgLogoPlaceholder'],
     render: () => (
       <Wide>
-        <Hero name="Alex" livesCount={1284} welcomeState="generic" allocationCard onAmountConfirm={noop} />
-      </Wide>
-    ),
-  },
-  {
-    name: 'ImpactAreasSection',
-    surface: 'Dashboard',
-    classFamily: '.section-block / .org-row',
-    path: 'src/components/dashboard/sections/ImpactAreasSection.jsx',
-    status: 'FFG-NATIVE',
-    note: 'OrgRow uses useNavigate — served by the app router.',
-    nested: ['OrgLogoPlaceholder', 'OrgRow (not in registry)'],
-    render: () => (
-      <Wide>
-        <ImpactAreasSection />
+        <OrgRow org={ORGS[0]} />
       </Wide>
     ),
   },
@@ -317,20 +299,6 @@ const REGISTRY = [
     render: () => (
       <Wide>
         <ImpactChart data={IMPACT_DATA_YEAR} />
-      </Wide>
-    ),
-  },
-  {
-    name: 'ImpactOverview',
-    surface: 'Dashboard',
-    classFamily: '.impact',
-    path: 'src/components/dashboard/sections/ImpactOverview.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Heaviest composite — selector, stats, chart, treemap, modal.',
-    nested: ['OverviewSelector', 'FilterChip', 'Stat (app)', 'ImpactChart', 'AllocationTreemap'],
-    render: () => (
-      <Wide>
-        <ImpactOverview />
       </Wide>
     ),
   },
@@ -353,20 +321,6 @@ const REGISTRY = [
     render: () => (
       <Wide>
         <PageTabsPreview />
-      </Wide>
-    ),
-  },
-  {
-    name: 'TransactionHistorySection',
-    surface: 'Dashboard',
-    classFamily: '.txn-* / .section-block',
-    path: 'src/components/dashboard/sections/TransactionHistorySection.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Sortable, paginated transaction table.',
-    nested: ['StatusPill'],
-    render: () => (
-      <Wide>
-        <TransactionHistorySection phase="allocated" />
       </Wide>
     ),
   },
@@ -570,20 +524,6 @@ const REGISTRY = [
     ),
   },
   {
-    name: 'ReviewStep',
-    surface: 'Onboarding',
-    classFamily: '.ob-review',
-    path: 'src/components/onboarding/steps/ReviewStep.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Summary with FocusBubbles; fixed ~900px width.',
-    nested: ['FocusBubbles'],
-    render: () => (
-      <Wide>
-        <ReviewStep order={CAUSE_IDS} locations={[]} onBack={noop} onSubmit={noop} />
-      </Wide>
-    ),
-  },
-  {
     name: 'ScaleStep',
     surface: 'Onboarding',
     classFamily: '.ob-scales / .ob-loc-search',
@@ -763,17 +703,26 @@ const REGISTRY = [
     ),
   },
   {
-    name: 'Directory',
+    name: 'org-acc',
     surface: 'Organization',
-    classFamily: '.org-dir / .org-grid',
-    path: 'src/components/organization/sections/Directory.jsx',
+    classFamily: '.org-acc-list / .org-acc',
+    path: 'src/components/organization/sections/OrgAccordionItem.jsx',
     status: 'FFG-NATIVE',
-    note: 'Full organization directory — toolbar, grid, pagination.',
-    nested: ['SortDropdown', 'OrganizationCard', 'Pagination'],
+    note: 'Boxed assessment accordion — composed from Accordion in the org detail.',
+    nested: ['Accordion'],
     render: () => (
-      <Wide>
-        <Directory onOpen={noop} />
-      </Wide>
+      <div className="org-acc-list org-acc-list--boxed" style={{ width: '100%', maxWidth: 560 }}>
+        <OrgAccordionItem icon={<PIcon.Target />} title="Problem Quality" defaultOpen>
+          <p className="org-acc__copy" style={{ color: 'var(--ffg-muted)', fontSize: '16px' }}>
+            Addresses a clearly defined, high-impact problem with strong evidence of need.
+          </p>
+        </OrgAccordionItem>
+        <OrgAccordionItem icon={<PIcon.Users />} title="Team & Leadership">
+          <p className="org-acc__copy" style={{ color: 'var(--ffg-muted)', fontSize: '16px' }}>
+            Deep domain expertise, lived experience, and a track record of sound decision-making.
+          </p>
+        </OrgAccordionItem>
+      </div>
     ),
   },
   {
@@ -815,20 +764,6 @@ const REGISTRY = [
           </Variant>
         ))}
       </Variants>
-    ),
-  },
-  {
-    name: 'OrganizationDetail',
-    surface: 'Organization',
-    classFamily: '.org-detail / .org-hero',
-    path: 'src/components/organization/sections/OrganizationDetail.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Full organization profile — deep composite (treemap, charts, updates).',
-    nested: ['LogoPlaceholder', 'Badge', 'ReviewStatusBadge', 'KPI', 'Stat (organization)', 'Section', 'TimelineStep', 'DotChart', 'CauseAllocationTreemap', 'Accordion', 'UpdatesSection'],
-    render: () => (
-      <Wide>
-        <OrganizationDetail organization={SAMPLE_ORGANIZATION} onBack={noop} />
-      </Wide>
     ),
   },
   {
