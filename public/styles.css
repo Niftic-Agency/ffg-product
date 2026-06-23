@@ -2148,8 +2148,7 @@ img {
 .orgs-filter-btn:hover { background: var(--overlay-dark-10); }
 .orgs-filter-btn svg { color: var(--color-icon); }
 
-/* SHADCN TARGET — Pagination (.orgs-pagination, .orgs-page-btn) */
-/* ---- Pagination ---- */
+/* ---- Pagination layout (controls themselves come from @ffg/pagination) ---- */
 .orgs-pagination {
   display: flex;
   align-items: center;
@@ -2163,37 +2162,12 @@ img {
   color: var(--ffg-muted);
   letter-spacing: 0.005em;
 }
-.orgs-pagination__controls {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.orgs-page-btn {
-  appearance: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 1px solid transparent;
-  width: 32px;
-  height: 32px;
-  color: var(--ffg-surface-950);
-  font-family: "PP Fragment Sans", sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.005em;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
-}
-.orgs-page-btn:hover:not(:disabled) { background: var(--overlay-dark-10); }
-.orgs-page-btn:disabled { color: var(--ffg-muted-2); cursor: not-allowed; }
-.orgs-page-btn.is-active {
-  background: var(--ffg-surface-950);
-  color: var(--ffg-surface-50);
-  border-color: var(--ffg-surface-950);
-}
-.orgs-page-btn svg { color: currentColor; }
+
+/* @ffg/pagination renders <ul>/<li>/<a>. Tailwind preflight is deliberately
+   not imported here (see src/index.css), so reset UA list markers + link
+   styling for the component's slots only. */
+[data-slot="pagination-content"] { list-style: none; margin: 0; padding: 0; }
+[data-slot="pagination-link"] { text-decoration: none; color: inherit; }
 
 /* "View" link in treemap header — prototype placeholder, hover state only */
 .alloc-treemap-view-btn {
@@ -3345,7 +3319,7 @@ img {
 /* ═══════════════════════════════════════════════════════════════════════════
    DIRECTORY
    ═══════════════════════════════════════════════════════════════════════════ */
-/* SHADCN TARGET — Card (.org-card)  Pagination (.org-pagination)  DropdownMenu (.org-sort__menu) */
+/* SHADCN TARGET — Card (.org-card)  DropdownMenu (.org-sort__menu) */
 .org-dir__head {
   margin-bottom: 64px;
 }
@@ -3786,66 +3760,6 @@ img {
 .org-card__foot--tier .org-info {
   color: var(--ffg-muted);
   align-self: center;
-}
-
-/* Pagination */
-.org-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-.org-pg {
-  appearance: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 32px;
-  padding: 0 12px;
-  border: 1px solid transparent;
-  border-radius: var(--radius);
-  background: transparent;
-  font-family: "PP Fragment Sans", sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.005em;
-  color: var(--ffg-surface-950);
-  cursor: pointer;
-  transition: background-color 120ms ease, border-color 120ms ease;
-}
-.org-pg--ghost {
-  border-color: var(--ffg-divider-strong);
-}
-.org-pg--ghost:hover:not(:disabled) { background: var(--overlay-dark-10); }
-.org-pg--ghost:disabled { color: var(--ffg-muted-2); cursor: not-allowed; }
-.org-pg--arrow {
-  width: 32px;
-  padding: 0;
-  justify-content: center;
-  border-color: var(--ffg-divider-strong);
-  color: var(--ffg-surface-950);
-}
-.org-pg--arrow:hover:not(:disabled) { background: var(--overlay-dark-10); }
-.org-pg--arrow:disabled { color: var(--ffg-muted-2); cursor: not-allowed; }
-.org-pg__nums {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.org-pg--num {
-  min-width: 32px;
-  justify-content: center;
-  padding: 0 10px;
-}
-.org-pg--num:hover:not(.is-active) { background: var(--overlay-dark-10); }
-.org-pg--num.is-active {
-  background: var(--ffg-surface-950);
-  color: var(--ffg-surface-50);
-  border-color: var(--ffg-surface-950);
-}
-.org-pg__ellip {
-  padding: 0 6px;
-  color: var(--ffg-muted);
 }
 
 /* SHADCN TARGET — Accordion (.org-acc) · Dialog (.org-modal) · Sheet or routed page */
@@ -5691,10 +5605,6 @@ img {
 .org-card:nth-child(10) { animation-delay: 460ms; }
 .org-card:nth-child(11) { animation-delay: 476ms; }
 .org-card:nth-child(12) { animation-delay: 490ms; }
-
-.org-pagination {
-  animation: ffg-fadein 0.5s cubic-bezier(0.22, 1, 0.36, 1) 520ms both;
-}
 
 /* ── Organization detail (individual organization view) ── */
 .org-back {

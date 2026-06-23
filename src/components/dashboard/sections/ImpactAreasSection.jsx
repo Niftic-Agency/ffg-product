@@ -3,6 +3,7 @@ import { Icon } from '../icons/Icon';
 import { STRATEGIES, IMPACT_AREAS } from '../data/orgTaxonomy';
 import { ORGS } from '../data/organizationList';
 import { OrgRow } from './OrgRow';
+import { Pagination } from '../../organization/sections/Pagination';
 
 function ImpactAreasSection({ cohortSize = 122 }) {
   const [strategy, setStrategy] = useState("all");
@@ -73,40 +74,12 @@ function ImpactAreasSection({ cohortSize = 122 }) {
       </div>
 
       {filtered.length > 0 &&
-      <nav className="orgs-pagination" aria-label="Pagination">
+      <div className="orgs-pagination">
           <div className="orgs-pagination__info">
             Showing {(safePage - 1) * perPage + 1}–{Math.min(safePage * perPage, filtered.length)} of {filtered.length}
           </div>
-          <div className="orgs-pagination__controls">
-            <button
-            type="button"
-            className="orgs-page-btn"
-            aria-label="Previous page"
-            disabled={safePage === 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}>
-
-              <Icon.ArrowLeft />
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) =>
-          <button
-            key={n}
-            type="button"
-            className={"orgs-page-btn orgs-page-btn--num" + (n === safePage ? " is-active" : "")}
-            aria-current={n === safePage ? "page" : undefined}
-            onClick={() => setPage(n)}>
-            {n}</button>
-          )}
-            <button
-            type="button"
-            className="orgs-page-btn"
-            aria-label="Next page"
-            disabled={safePage === totalPages}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>
-
-              <Icon.ArrowRight />
-            </button>
-          </div>
-        </nav>
+          <Pagination page={safePage} totalPages={totalPages} onChange={setPage} />
+        </div>
       }
     </section>);
 

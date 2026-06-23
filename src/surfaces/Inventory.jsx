@@ -728,10 +728,10 @@ const REGISTRY = [
   {
     name: 'Pagination',
     surface: 'Organization',
-    classFamily: '.org-pagination',
+    classFamily: '@ffg/pagination',
     path: 'src/components/organization/sections/Pagination.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Token compaction at the start, middle, and end of a long range.',
+    status: 'SHADCN',
+    note: 'Controlled wrapper over @ffg/pagination; token compaction at the start, middle, and end of a long range.',
     render: () => (
       <div style={{ display: 'grid', gap: 18, width: '100%', justifyItems: 'center' }}>
         <Variant label="page 1 of 8">
