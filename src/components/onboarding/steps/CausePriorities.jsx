@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Ic } from '../icons/Ic';
 import { CAUSE_BY_ID } from '../data/causeAreas';
+import { ObCause } from '../atoms/ObCause';
 
 /* ── Step 1: cause priorities, drag to reorder ──────── */
 function CausePriorities({ order, setOrder }) {
@@ -39,44 +39,23 @@ function CausePriorities({ order, setOrder }) {
       <div className="ob-causes" role="list">
         {order.map((id, idx) => {
           const cause = CAUSE_BY_ID[id];
-          const Icon = cause.icon;
           const isTop = idx < 3;
           return (
-            <div className="ob-cause" key={id} role="listitem">
-              <div className="ob-cause__rank">{isTop ? idx + 1 : ""}</div>
-              <div
-                className={
-                "ob-cause__row" + (
-                isTop ? " is-top" : "") + (
-                dragId === id ? " is-dragging" : "") + (
-                overId === id && dragId && dragId !== id ? " is-over" : "") + (
-                openId === id ? " is-open" : "")
-                }
-                draggable
-                onDragStart={(e) => onDragStart(e, id)}
-                onDragOver={(e) => onDragOver(e, id)}
-                onDragEnd={onDragEnd}
-                onDrop={(e) => onDrop(e, id)}
-                aria-label={`${cause.name}, rank ${idx + 1}`}>
-
-                <span className="ob-cause__handle"><Ic.Grip /></span>
-                <span className="ob-cause__name" style={{ fontSize: "16px", fontWeight: "300" }}>{cause.name}</span>
-                <span className="ob-cause__icon"><Icon /></span>
-                <button
-                  type="button"
-                  className="ob-cause__caret"
-                  onClick={(e) => { e.stopPropagation(); setOpenId(openId === id ? null : id); }}
-                  aria-expanded={openId === id}
-                  aria-label="Toggle description">
-                  <Ic.Caret width="24" height="24" />
-                </button>
-                <div className="ob-cause__desc-wrap">
-                  <div className="ob-cause__desc-inner">
-                    <p className="ob-cause__desc">{cause.description}</p>
-                  </div>
-                </div>
-              </div>
-            </div>);
+            <ObCause
+              key={id}
+              cause={cause}
+              rank={idx + 1}
+              isTop={isTop}
+              isDragging={dragId === id}
+              isOver={overId === id && dragId && dragId !== id}
+              isOpen={openId === id}
+              onToggle={(e) => { e.stopPropagation(); setOpenId(openId === id ? null : id); }}
+              dragProps={{
+                onDragStart: (e) => onDragStart(e, id),
+                onDragOver: (e) => onDragOver(e, id),
+                onDragEnd,
+                onDrop: (e) => onDrop(e, id),
+              }} />);
 
         })}
       </div>

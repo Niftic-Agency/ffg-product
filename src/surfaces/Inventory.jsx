@@ -28,11 +28,7 @@ import { Welcome } from '../components/dashboard/sections/hero/Welcome';
 import { ProgressBar } from '../components/onboarding/atoms/ProgressBar';
 import { FocusBubbles } from '../components/onboarding/atoms/FocusBubbles';
 import { StepChrome } from '../components/onboarding/atoms/StepChrome';
-import { CausePriorities } from '../components/onboarding/steps/CausePriorities';
-import { GoalsStep } from '../components/onboarding/steps/GoalsStep';
-import { Landing } from '../components/onboarding/steps/Landing';
-import { ScaleStep } from '../components/onboarding/steps/ScaleStep';
-import { Submitted } from '../components/onboarding/steps/Submitted';
+import { ObCause } from '../components/onboarding/atoms/ObCause';
 
 // ── Organization ──────────────────────────────────────────────────────────────────
 import { Badge } from '../components/shared/Badge';
@@ -162,21 +158,21 @@ function SortDropdownPreview() {
   return <SortDropdown value={value} onChange={setValue} />;
 }
 
-function CausePrioritiesPreview() {
-  const [order, setOrder] = useState(CAUSE_IDS);
-  return <CausePriorities order={order} setOrder={setOrder} />;
-}
-
-function GoalsStepPreview() {
-  const [selected, setSelected] = useState([]);
-  return <GoalsStep causeId="environment" selected={selected} setSelected={setSelected} />;
-}
-
-function ScaleStepPreview() {
-  const [scales, setScales] = useState([]);
-  const [locations, setLocations] = useState([]);
+function ObCausePreview() {
+  const [openId, setOpenId] = useState(null);
   return (
-    <ScaleStep scales={scales} setScales={setScales} locations={locations} setLocations={setLocations} />
+    <div className="ob-causes" role="list" style={{ width: '100%' }}>
+      {CAUSE_AREAS.slice(0, 3).map((cause, idx) => (
+        <ObCause
+          key={cause.id}
+          cause={cause}
+          rank={idx + 1}
+          isTop
+          isOpen={openId === cause.id}
+          onToggle={(e) => { e.stopPropagation(); setOpenId(openId === cause.id ? null : cause.id); }}
+        />
+      ))}
+    </div>
   );
 }
 
@@ -485,67 +481,15 @@ const REGISTRY = [
     ),
   },
   {
-    name: 'CausePriorities',
+    name: 'ob-cause',
     surface: 'Onboarding',
-    classFamily: '.ob-causes / .ob-cause__row',
-    path: 'src/components/onboarding/steps/CausePriorities.jsx',
+    classFamily: '.ob-cause / .ob-cause__row',
+    path: 'src/components/onboarding/atoms/ObCause.jsx',
     status: 'FFG-NATIVE',
-    note: 'Drag-to-reorder cause ranking (controlled).',
+    note: 'Single cause row — drag handle, icon, expandable description. Composed into the CausePriorities step.',
     render: () => (
       <Wide>
-        <CausePrioritiesPreview />
-      </Wide>
-    ),
-  },
-  {
-    name: 'GoalsStep',
-    surface: 'Onboarding',
-    classFamily: '.ob-goals / .ob-goal',
-    path: 'src/components/onboarding/steps/GoalsStep.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Pick up to 3 goals for a cause (environment shown).',
-    render: () => (
-      <Wide>
-        <GoalsStepPreview />
-      </Wide>
-    ),
-  },
-  {
-    name: 'Landing',
-    surface: 'Onboarding',
-    classFamily: '.ob-landing',
-    path: 'src/components/onboarding/steps/Landing.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Onboarding intro screen.',
-    render: () => (
-      <Wide>
-        <Landing onStart={noop} />
-      </Wide>
-    ),
-  },
-  {
-    name: 'ScaleStep',
-    surface: 'Onboarding',
-    classFamily: '.ob-scales / .ob-loc-search',
-    path: 'src/components/onboarding/steps/ScaleStep.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Scale picker; location search appears once a scale is chosen.',
-    render: () => (
-      <Wide>
-        <ScaleStepPreview />
-      </Wide>
-    ),
-  },
-  {
-    name: 'Submitted',
-    surface: 'Onboarding',
-    classFamily: '.ob-done',
-    path: 'src/components/onboarding/steps/Submitted.jsx',
-    status: 'FFG-NATIVE',
-    note: 'Final confirmation screen.',
-    render: () => (
-      <Wide>
-        <Submitted />
+        <ObCausePreview />
       </Wide>
     ),
   },
