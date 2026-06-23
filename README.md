@@ -42,8 +42,16 @@ separately-maintained component library
 (its `base-nova` / Base UI style, FFG theme tokens, and PP Fragment fonts).
 
 - `components.json` — shadcn config. The `@ffg` registry namespace points at
-  `https://factory-for-goodcomponents.vercel.app/r/{name}.json`. Once the library
-  exposes that endpoint, `npx shadcn@latest add @ffg/<name>` works directly.
+  `https://factory-for-goodcomponents.vercel.app/r/{name}.json`. That endpoint is
+  now live, so the CLI consumes the library directly:
+
+  ```bash
+  npx shadcn@latest add @ffg/button       # add a single component + deps
+  npx shadcn@latest add @ffg/button badge  # add several at once
+  ```
+
+  Components land in `src/components/ui/` per the `aliases` above, and any external
+  npm packages they declare are installed automatically.
 - `src/index.css` — Tailwind v4 + the FFG theme tokens. **Generated** from the
   library's `app/globals.css` by `npm run ui:import -- --theme`; don't hand-edit.
   Imported once in `src/main.jsx`. Tailwind's global *preflight* reset is
@@ -52,12 +60,11 @@ separately-maintained component library
 - `src/components/ui/*` — vendored themed components (`.tsx`, compiled by Vite/esbuild).
 - `src/lib/utils.js` — `cn()` helper.
 
-### Importing components (stopgap)
+### Importing components (fallback)
 
-Until the library ships its `/r` registry, the library's public `manifest.json` is a
-Brand-OS catalogue only — its `code` field is a usage demo, not component source — so
-the shadcn CLI can't consume it. The bridge script pulls real source from the library's
-GitHub repo (requires the `gh` CLI authenticated with read access):
+Prefer the `@ffg` registry above. The `ui:import` bridge predates it and remains for
+offline work or pulling source the registry doesn't expose. It pulls real source from
+the library's GitHub repo (requires the `gh` CLI authenticated with read access):
 
 ```bash
 npm run ui:import -- --list          # browse the catalogue (59 components)
