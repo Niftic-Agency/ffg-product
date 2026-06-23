@@ -4,8 +4,7 @@ import { ShieldCheck } from 'lucide-react';
 
 // Living index of FFG-native components — every real UI component under
 // src/components rendered live. Data/ and icons/ modules are excluded (they
-// export values, not components). Sibling of /shadcn-demo (the themed
-// @/components/ui primitives). Each entry renders the component with realistic
+// export values, not components). Each entry renders the component with realistic
 // props, alongside its surface, source path, CSS class family, and status.
 // Route: /inventory.
 
@@ -980,8 +979,7 @@ export default function Inventory() {
           </h1>
           <p style={{ color: 'var(--muted-foreground)', margin: 0 }}>
             Every FFG-native component under <code>src/components</code>, rendered live.{' '}
-            <code>data/</code> and <code>icons/</code> modules are omitted. Themed shadcn primitives live at{' '}
-            <code>/shadcn-demo</code>.
+            <code>data/</code> and <code>icons/</code> modules are omitted.
           </p>
         </header>
 
