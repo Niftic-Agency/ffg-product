@@ -13,7 +13,7 @@ import { TimelineStep } from '../atoms/TimelineStep';
 import { ReviewStatusBadge, BADGE_TEXT } from '../atoms/ReviewStatusBadge';
 import { UpdatesSection } from '../../shared/UpdatesSection';
 import { ORGANIZATION_UPDATE_ITEMS } from '../data/updateItems';
-import { Accordion } from '../modals/Accordion.organization';
+import { OrgAccordionItem } from './OrgAccordionItem';
 import { DotChart } from '../charts/DotChart';
 
 
@@ -110,41 +110,31 @@ function OrganizationDetail({ organization, onBack }) {
           </div>
         }>
           <div className="org-acc-list org-acc-list--boxed">
-            <div className="ob-cause-card">
-              <Accordion icon={<PIcon.Target />} title="Problem Quality" defaultOpen>
-                <p className="org-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
+            <OrgAccordionItem icon={<PIcon.Target />} title="Problem Quality" defaultOpen>
+              <p className="org-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
 {organization.name} addresses a clearly defined, high-impact problem with strong evidence of need. The scope is focused enough to drive measurable change while meaningful enough to matter at scale.
-                </p>
-              </Accordion>
-            </div>
-            <div className="ob-cause-card">
-              <Accordion icon={<PIcon.Users />} title="Team & Leadership">
-                <p className="org-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
+              </p>
+            </OrgAccordionItem>
+            <OrgAccordionItem icon={<PIcon.Users />} title="Team & Leadership">
+              <p className="org-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
 The leadership team brings deep domain expertise, lived experience, and a track record of sound decision-making. We trust them to operate with integrity, humility, and community connection.
-                </p>
-              </Accordion>
-            </div>
-            <div className="ob-cause-card">
-              <Accordion icon={<PIcon.BarChart />} title="Track Record & Approach">
-                <p className="org-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
+              </p>
+            </OrgAccordionItem>
+            <OrgAccordionItem icon={<PIcon.BarChart />} title="Track Record & Approach">
+              <p className="org-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
 {organization.name} has demonstrated consistent, reproducible results over time. Their methodology is grounded in evidence and adapted thoughtfully to the communities they serve.
-                </p>
-              </Accordion>
-            </div>
-            <div className="ob-cause-card">
-              <Accordion icon={<PIcon.TrendingUp />} title="Growth Potential & Fit">
-                <p className="org-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
+              </p>
+            </OrgAccordionItem>
+            <OrgAccordionItem icon={<PIcon.TrendingUp />} title="Growth Potential & Fit">
+              <p className="org-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
 This organization is positioned for responsible growth. Their model aligns well with Factory for Good's strategic focus areas and has clear pathways to expand reach without sacrificing quality.
-                </p>
-              </Accordion>
-            </div>
-            <div className="ob-cause-card">
-              <Accordion icon={<PIcon.Coin />} title="Cost Effectiveness & Leverage">
-                <p className="org-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
+              </p>
+            </OrgAccordionItem>
+            <OrgAccordionItem icon={<PIcon.Coin />} title="Cost Effectiveness & Leverage">
+              <p className="org-acc__copy" style={{ color: "var(--ffg-muted)", fontSize: "16px" }}>
 Dollars directed to {organization.name} go far. Their cost-per-outcome benchmarks favorably against peers, and their model creates downstream leverage — multiplying impact beyond the direct investment.
-                </p>
-              </Accordion>
-            </div>
+              </p>
+            </OrgAccordionItem>
           </div>
         </Section>
         </div>
