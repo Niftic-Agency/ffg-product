@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Icon } from '../icons/Icon';
 import { TRANSACTIONS } from '../data/transactions';
 import { StatusPill } from '../atoms/StatusPill';
+import { Pagination } from '../../organization/sections/Pagination';
 
 // Columns are sortable (click a header to toggle asc → desc) unless sortable: false.
 const COLUMNS = [
@@ -158,40 +159,12 @@ function TransactionHistorySection({ phase }) {
       </div>
 
       {sorted.length > PER_PAGE &&
-      <nav className="orgs-pagination" aria-label="Pagination">
+      <div className="orgs-pagination">
           <div className="orgs-pagination__info">
             Showing {(safePage - 1) * PER_PAGE + 1}–{Math.min(safePage * PER_PAGE, sorted.length)} of {sorted.length}
           </div>
-          <div className="orgs-pagination__controls">
-            <button
-            type="button"
-            className="orgs-page-btn"
-            aria-label="Previous page"
-            disabled={safePage === 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}>
-
-              <Icon.ArrowLeft />
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) =>
-          <button
-            key={n}
-            type="button"
-            className={"orgs-page-btn orgs-page-btn--num" + (n === safePage ? " is-active" : "")}
-            aria-current={n === safePage ? "page" : undefined}
-            onClick={() => setPage(n)}>
-            {n}</button>
-          )}
-            <button
-            type="button"
-            className="orgs-page-btn"
-            aria-label="Next page"
-            disabled={safePage === totalPages}
-            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}>
-
-              <Icon.ArrowRight />
-            </button>
-          </div>
-        </nav>
+          <Pagination page={safePage} totalPages={totalPages} onChange={setPage} />
+        </div>
       }
     </section>);
 
