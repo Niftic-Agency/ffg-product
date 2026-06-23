@@ -4683,7 +4683,7 @@ img {
   gap: 80px;
   padding-top: 8px;
 }
-.org-stat__label {
+.org-detail-stat__label {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -4692,8 +4692,8 @@ img {
   letter-spacing: 0.005em;
   margin-bottom: 8px;
 }
-.org-stat__value {
-  font-family: "PP Fragment Glare", serif;
+.org-detail-stat__value {
+  font-family: "PP Fragment Sans", sans-serif;
   font-style: normal;
   font-weight: 300;
   font-size: var(--type-h3);
