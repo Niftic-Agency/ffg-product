@@ -14,7 +14,6 @@ import Home from './surfaces/Home.jsx';
 import Onboarding from './surfaces/Onboarding.jsx';
 import OrganizationsUnauth from './surfaces/OrganizationsUnauth.jsx';
 import Organization from './surfaces/Organization.jsx';
-import ShadcnDemo from './surfaces/ShadcnDemo.jsx';
 import Inventory from './surfaces/Inventory.jsx';
 
 // Layout routes keep the top nav mounted across child navigations: only the
@@ -50,8 +49,7 @@ const router = createBrowserRouter([
         ],
       },
       { path: '/onboarding', element: <Onboarding /> },
-      { path: '/shadcn-demo', element: <ShadcnDemo /> },
-      { path: '/inventory', element: <Inventory /> },
+{ path: '/inventory', element: <Inventory /> },
       { path: '*', element: <Navigate to="/dashboard" replace /> },
     ],
   },
