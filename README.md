@@ -1,17 +1,22 @@
 # Factory for Good
 
 A faithful implementation of the Factory for Good design prototypes
-(exported from Claude Design) as a real Vite + React app. Three surfaces,
-wired together with routing:
+(exported from Claude Design) as a real Vite + React app. The surfaces are
+wired together with routing, split across an authenticated and an
+unauthenticated layout:
 
-| Route          | Surface     | What it is |
-|----------------|-------------|------------|
-| `/dashboard`   | Dashboard   | The "control room": hero, transfer status, impact chart, allocation treemap, updates. A floating Tweaks panel switches the donation-status phase (preview / in-progress / allocated). |
-| `/onboarding`  | Onboarding  | Landing → 6-step questionnaire → submitted. A single-file state machine. |
-| `/partner`     | Partner     | Org directory (sort / filter / paginate) and individual partner detail (KPIs, accordions, intervention charts). |
-| `/shadcn-demo` | shadcn      | Living gallery + verification surface for the themed shadcn instance (`@/components/ui/*`). |
+| Route                     | Surface           | What it is |
+|---------------------------|-------------------|------------|
+| `/dashboard`              | Dashboard         | The "control room": hero, transfer status, impact chart, allocation treemap, updates. A floating Tweaks panel switches the donation-status phase (preview / in-progress / allocated). |
+| `/organizations/:name?`   | Organization      | Org directory (sort / filter / paginate); `:name` deep-links to one organization's detail (KPIs, accordions, intervention charts). |
+| `/onboarding`             | Onboarding        | Landing → 6-step questionnaire → submitted. A single-file state machine. |
+| `/home`                   | Home              | Unauthenticated landing surface. |
+| `/dashboard-unauth`       | DashboardUnauth   | Unauthenticated dashboard variant. |
+| `/organizations-unauth`   | OrganizationsUnauth | Unauthenticated organizations variant. |
 
-`/` redirects to `/dashboard`.
+`/` redirects to `/dashboard`, and any unknown path falls through to it. A
+`Splash` overlay renders ahead of the router on the first load of a session.
+The mesh gradient morphs between surfaces on navigation (see below).
 
 ## Run
 
@@ -23,10 +28,11 @@ npm run build    # production build → dist/
 
 ## Structure
 
-- `src/surfaces/` — the three top-level surface shells (`Dashboard`, `Onboarding`, `Partner`).
-- `src/components/{dashboard,onboarding,partner,shared}/` — ported components, grouped by surface (icons, data, atoms, panels, sections, …).
-- `src/topnav-auth.jsx`, `src/tweaks-panel.jsx` — shared chrome.
-- `src/lib/mesh-gradient.js` — the WebGL Coons-patch mesh background renderer; `MeshBackground.jsx` mounts it once at the app root. See [src/lib/gradients/README.md](src/lib/gradients/README.md) for how to import a gradient, set it to morph, and link a pulse to an action.
+- `src/surfaces/` — the top-level surface shells (`Dashboard`, `DashboardUnauth`, `Home`, `Onboarding`, `Organization`, `OrganizationsUnauth`, `Splash`).
+- `src/components/{dashboard,onboarding,organization,shared,ui}/` — ported components, grouped by surface (icons, data, atoms, panels, sections, …); `ui/` holds the vendored shadcn instance.
+- `src/layouts/` — `AuthLayout` and `UnauthLayout` keep the top nav mounted across child navigations; `RouteFade` handles the transition.
+- `src/topnav-auth.jsx`, `src/topnav-unauth.jsx`, `src/tweaks-panel.jsx` — shared chrome.
+- `src/lib/mesh-gradient.js` — the WebGL Coons-patch mesh background renderer; `MeshBackground.jsx` mounts it once at the app root. `src/lib/gradient/GradientRouteSync.jsx` (+ `controller.js`) morphs the mesh on navigation, driven by the per-surface configs in `src/lib/gradients/`. See [src/lib/gradients/README.md](src/lib/gradients/README.md) for how to import a gradient, set it to morph, and link a pulse to an action.
 - `public/styles.css` — the design system's single stylesheet (CSS-variable tokens, PP Fragment fonts).
 - `public/assets/` — fonts, logo, avatar.
 
@@ -67,7 +73,7 @@ offline work or pulling source the registry doesn't expose. It pulls real source
 the library's GitHub repo (requires the `gh` CLI authenticated with read access):
 
 ```bash
-npm run ui:import -- --list          # browse the catalogue (59 components)
+npm run ui:import -- --list          # browse the catalogue
 npm run ui:import -- button badge    # import specific components + internal deps
 npm run ui:import -- --all           # import everything
 npm run ui:import -- --theme         # re-sync src/index.css from the library theme
