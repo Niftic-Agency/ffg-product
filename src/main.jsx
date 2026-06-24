@@ -14,7 +14,6 @@ import Home from './surfaces/Home.jsx';
 import Onboarding from './surfaces/Onboarding.jsx';
 import OrganizationsUnauth from './surfaces/OrganizationsUnauth.jsx';
 import Organization from './surfaces/Organization.jsx';
-import Inventory from './surfaces/Inventory.jsx';
 
 // Layout routes keep the top nav mounted across child navigations: only the
 // <Outlet/> content swaps, so moving between sibling surfaces never reloads
@@ -49,7 +48,6 @@ const router = createBrowserRouter([
         ],
       },
       { path: '/onboarding', element: <Onboarding /> },
-{ path: '/inventory', element: <Inventory /> },
       { path: '*', element: <Navigate to="/dashboard" replace /> },
     ],
   },
